@@ -139,7 +139,7 @@ private:
     return size_of_string / 2;
   }
 
-  static inline uint8_t hex_to_byte(const char *hex) {
+  static inline uint8_t hex_to_byte_for_first_byte(const char *hex) {
     auto nybble = [](char c) -> uint8_t {
       return (c <= '9') ? c - '0' : (toupper(c) - 'A' + 10);
     };
@@ -147,7 +147,7 @@ private:
   }
 
   void validate_case(int size_of_instruction_) {
-    auto opcode = hex_to_byte(instruction_.data());
+    auto opcode = hex_to_byte_for_first_byte(instruction_.data());
 
     const auto &formatting = opcode_table[opcode];
     if (formatting.valid) {
