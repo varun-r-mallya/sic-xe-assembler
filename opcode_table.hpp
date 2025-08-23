@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <cstdint>
-#include <string>
+#include <string_view>
 
 /*
  * Opcode table with index of opcode and indexed to mnemonic and formats in a
