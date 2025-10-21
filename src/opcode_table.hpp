@@ -2,17 +2,16 @@
 #include <array>
 #include <cstdint>
 #include <string_view>
+#include <unordered_map>
 
 /*
- * Opcode table with index of opcode and indexed to mnemonic and formats in a
- * struct with 3 and 4 both represented by a 3 as there are no 4 only formats
- * and always comes with a 3. Used a constexpr lambda array to make sure no
- * hashing occurs at runtime and everything is calculated at compile time.
+ * Opcode table with instruction information for SIC/XE assembler
+ * Includes bidirectional lookup capability (opcode->mnemonic and mnemonic->opcode)
  */
 struct Instruction {
   uint8_t opcode;
   std::string_view mnemonic;
-  uint8_t fmt1;
+  uint8_t fmt;
   bool valid;
 };
 
@@ -81,3 +80,27 @@ constexpr std::array<Instruction, 256> opcode_table = [] {
 
   return table;
 }();
+
+// Helper function to create a mnemonic to opcode lookup map
+inline std::unordered_map<std::string_view, const Instruction*> create_mnemonic_map() {
+  std::unordered_map<std::string_view, const Instruction*> map;
+  for (const auto& instr : opcode_table) {
+    if (instr.valid) {
+      map[instr.mnemonic] = &instr;
+    }
+  }
+  return map;
+}
+
+// Global mnemonic map, initialized once
+inline const std::unordered_map<std::string_view, const Instruction*>& get_mnemonic_map() {
+  static const auto mnemonic_map = create_mnemonic_map();
+  return mnemonic_map;
+}
+
+// Function to lookup instruction by mnemonic
+inline const Instruction* find_instruction_by_mnemonic(std::string_view mnemonic) {
+  const auto& map = get_mnemonic_map();
+  auto it = map.find(mnemonic);
+  return (it != map.end()) ? it->second : nullptr;
+}

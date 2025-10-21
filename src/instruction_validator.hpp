@@ -1,22 +1,29 @@
+#pragma once
 #include <string>
 #include <cstdint>
-#include <utility>
+#include "tokenizer.hpp"
+#include "opcode_table.hpp"
 
 class InstructionValidator {
 public:
-  explicit InstructionValidator(std::string instruction)
-      : instruction_(std::move(instruction)) {}
-  std::string isValid();
-
+  explicit InstructionValidator();
+  
+  // Validate a tokenized instruction line
+  bool validate(const TokenizedLine& line, std::string& error_message);
+  
+  // Generate machine code for a valid instruction
+  std::string generateMachineCode(const TokenizedLine& line);
+  
+  // Get instruction information from mnemonic
+  const Instruction* getInstructionInfo(const std::string& mnemonic);
+  
 private:
-  std::string instruction_;
-  bool validity_ = false;
-  std::string name_of_instruction_;
-  std::string error_message;
-
-  [[nodiscard]] std::size_t num_of_bytes() const;
-
-  static inline uint8_t hex_to_byte_for_first_byte(const char *hex);
-
-  void validate_case(int size_of_instruction_);
+  bool validate_format1(const TokenizedLine& line, std::string& error_message);
+  bool validate_format2(const TokenizedLine& line, std::string& error_message);
+  bool validate_format3(const TokenizedLine& line, std::string& error_message);
+  bool validate_format4(const TokenizedLine& line, std::string& error_message);
+  bool validate_directive(const TokenizedLine& line, std::string& error_message);
+  
+  uint8_t get_register_number(const std::string& reg_name);
+  bool is_valid_hex_constant(const std::string& hex);
 };

@@ -31,4 +31,7 @@ run: $(TARGET)
 clean:
 	rm -rf $(BUILDDIR)
 
+test:
+	./$(TARGET) tests/test.sic
+
 .PHONY: all clean
