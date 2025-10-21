@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -Wextra -std=c++23 -O3 -fsanitize=address
 
 BUILDDIR = build
 
-SOURCES = $(wildcard *.cc)
+SOURCES = $(wildcard src/*.cc)
 
 OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o)
 
@@ -12,7 +12,7 @@ TARGET = $(BUILDDIR)/program
 all: $(TARGET)
 
 $(BUILDDIR):
-	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/src
 
 $(TARGET): $(OBJECTS) | $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^
