@@ -1,57 +1,55 @@
-/*
- * main.cc
- *
- * SIC/XE Assembler
- * Based on instruction validator from CSO-101 Assignment 7
- * Varun R Mallya
- * 23117144
- */
-
 #include <iostream>
 #include <string>
-#include "assembler.hpp"
+#include <cstring>
+#include <filesystem>
 
-void print_usage() {
-  std::cout << "Usage: ./assembler <input_file>" << std::endl;
+void print_help(const char *program_name) {
+    std::cout << "Usage: " << program_name << " [OPTIONS] <input_file> <output_file>\n"
+            << "\nOptions:\n"
+            << "  -h           Display this help message\n"
+            << "  -i           Output intermediate files\n"
+            << "\nArguments:\n"
+            << "  input_file   Path to the input file\n"
+            << "  output_file  Path to the output file\n";
 }
 
-int main(int argc, char* argv[]) {
-  if (argc < 2) {
-    std::cerr << "Error: No input file specified." << std::endl;
-    print_usage();
-    return 1;
-  }
-  
-  std::string input_file = argv[1];
-  Assembler assembler;
-  
-  std::cout << "Assembling file: " << input_file << std::endl;
-  
-  AssemblerOutput output = assembler.assemble(input_file);
-  
-  // Print any errors
-  if (!output.errors.empty()) {
-    std::cout << "\nErrors:" << std::endl;
-    for (const auto& error : output.errors) {
-      std::cout << error << std::endl;
+int main(const int argc, char *argv[]) {
+    bool output_intermediate = false;
+    std::string input_file;
+    std::string output_file;
+
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "-h") == 0) {
+            print_help(argv[0]);
+            return 0;
+        }
+        if (std::strcmp(argv[i], "-i") == 0) {
+            output_intermediate = true;
+        } else if (input_file.empty()) {
+            input_file = argv[i];
+        } else if (output_file.empty()) {
+            output_file = argv[i];
+        } else {
+            std::cerr << "Error: Too many arguments\n";
+            print_help(argv[0]);
+            return 1;
+        }
     }
-    return 1;
-  }
-  
-  // Print symbol table
-  std::cout << "\nSymbol Table:" << std::endl;
-  std::cout << "-----------------" << std::endl;
-  for (const auto& [symbol, address] : output.symbol_table) {
-    std::cout << symbol << ": " << std::hex << std::uppercase << address << std::endl;
-  }
-  std::cout << std::dec; // Reset to decimal output
-  
-  // Print object code
-  std::cout << "\nObject Code:" << std::endl;
-  std::cout << "-----------------" << std::endl;
-  for (const auto& code : output.object_code) {
-    std::cout << code << std::endl;
-  }
-  
-  return 0;
+
+    if (input_file.empty() || output_file.empty()) {
+        std::cerr << "Error: Both Input and Output files are required\n";
+        print_help(argv[0]);
+        return 1;
+    }
+
+    if (!std::filesystem::exists(input_file)) {
+        std::cerr << "Error: Input file '" << input_file << "' does not exist\n";
+        return 1;
+    }
+
+    std::cout << "Input file: " << input_file << "\n";
+    std::cout << "Output file: " << output_file << "\n";
+    std::cout << "Output intermediate files: " << (output_intermediate ? "yes" : "no") << "\n";
+
+    return 0;
 }
