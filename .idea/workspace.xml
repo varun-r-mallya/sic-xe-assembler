@@ -30,17 +30,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sic-xe-assembler.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="infinite loop error">
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pass_1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_1.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pass_2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pass_2.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,8 +176,17 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1761340051173</updated>
-      <workItem from="1761340053398" duration="3601000" />
+      <workItem from="1761340053398" duration="4307000" />
     </task>
+    <task id="LOCAL-00001" summary="infinite loop error">
+      <option name="closed" value="true" />
+      <created>1761343676579</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761343676579</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -193,5 +196,9 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="infinite loop error" />
+    <option name="LAST_COMMIT_MESSAGE" value="infinite loop error" />
   </component>
 </project>

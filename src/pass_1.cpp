@@ -8,19 +8,11 @@
 
 using namespace std;
 
-// Helper function to format output with fixed width columns
+// Helper function to format output with tabs (matching functional version)
 string formatIntermediateLine(const string &line, const string &address, const string &block,
                               const string &label, const string &opcode, const string &operand,
                               const string &comment) {
-    stringstream ss;
-    ss << left << setw(8) << line
-            << setw(12) << address
-            << setw(8) << block
-            << setw(12) << label
-            << setw(12) << opcode
-            << setw(12) << operand
-            << comment;
-    return ss.str();
+    return line + "\t" + address + "\t" + block + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
 }
 
 std::string pass_1::get_first_executable_sec() {
@@ -41,8 +33,7 @@ bool pass_1::get_error() const {
 
 void pass_1::run_pass_1() {
     // utilities::writeToFile(errorFile, "**********PASS1************");
-    utilities::writeToFile(intermediateFile,
-                           formatIntermediateLine("Line", "Address", "Block", "Label", "OPCODE", "OPERAND", "Comment"));
+    utilities::writeToFile(intermediateFile, "Line\tAddress\tBlock\tLabel\tOPCODE\tOPERAND\tComment");
     string fileLine;
     string writeData, writeDataSuffix, writeDataPrefix;
     int index = 0;
@@ -62,7 +53,7 @@ void pass_1::run_pass_1() {
     getline(SourceFile, fileLine);
     lineNumber += 5;
     while (utilities::checkCommentLine(fileLine)) {
-        writeData = to_string(lineNumber) + "        " + fileLine;
+        writeData = to_string(lineNumber) + "\t" + fileLine;
         utilities::writeToFile(intermediateFile, writeData);
         getline(SourceFile, fileLine); // read first input line
         lineNumber += 5;
@@ -79,8 +70,8 @@ void pass_1::run_pass_1() {
         // cout<<startAddress<<endl;
         // exit(0);
         LOCCTR = startAddress;
-        writeData = formatIntermediateLine(to_string(lineNumber), utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR),
-                                           to_string(currentBlockNumber), label, opcode, operand, comment);
+        writeData = to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
+                   to_string(currentBlockNumber) + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
         utilities::writeToFile(intermediateFile, writeData); // Write file to intermediate file
 
         getline(SourceFile, fileLine); // Read next line
@@ -280,22 +271,19 @@ void pass_1::run_pass_1() {
             }
             utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
             if (opcode == "EQU" && tableStore->SYMTAB[label].relative == 0) {
-                writeData = writeDataPrefix + formatIntermediateLine(to_string(lineNumber),
-                                                                     utilities::intToStringHex(
-                                                                         LOCCTR - lastDeltaLOCCTR), " ", label,
-                                                                     opcode, operand, comment).append(writeDataSuffix);
+                writeData = writeDataPrefix + to_string(lineNumber) + "\t" +
+                           utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" + " " + "\t" +
+                           label + "\t" + opcode + "\t" + operand + "\t" + comment + writeDataSuffix;
             } else {
-                writeData = writeDataPrefix + formatIntermediateLine(to_string(lineNumber),
-                                                                     utilities::intToStringHex(
-                                                                         LOCCTR - lastDeltaLOCCTR),
-                                                                     to_string(currentBlockNumber), label, opcode,
-                                                                     operand,
-                                                                     comment).append(writeDataSuffix);
+                writeData = writeDataPrefix + to_string(lineNumber) + "\t" +
+                           utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
+                           to_string(currentBlockNumber) + "\t" + label + "\t" + opcode + "\t" +
+                           operand + "\t" + comment + writeDataSuffix;
             }
             writeDataPrefix = "";
             writeDataSuffix = "";
         } else {
-            writeData = to_string(lineNumber) + "        " + fileLine;
+            writeData = to_string(lineNumber) + "\t" + fileLine;
         }
         utilities::writeToFile(intermediateFile, writeData);
 
@@ -326,8 +314,8 @@ void pass_1::run_pass_1() {
 
     handle_LTORG(writeDataSuffix, lineNumberDelta, lineNumber, LOCCTR, lastDeltaLOCCTR, currentBlockNumber);
 
-    writeData = formatIntermediateLine(to_string(lineNumber), utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR),
-                                       " ", label, opcode, operand, comment) + writeDataSuffix;
+    writeData = to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
+               " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment + writeDataSuffix;
     utilities::writeToFile(intermediateFile, writeData);
 
     int LocctrArr[totalBlocks];
@@ -465,15 +453,8 @@ void pass_1::handle_LTORG(std::string &litPrefix, int &lineNumberDelta, int line
             tableStore->LITTAB[fst].address = utilities::intToStringHex(LOCCTR);
             tableStore->LITTAB[fst].blockNumber = currentBlockNumber;
 
-            stringstream ss;
-            ss << left << setw(8) << to_string(lineNumber)
-                    << setw(12) << utilities::intToStringHex(LOCCTR)
-                    << setw(8) << to_string(currentBlockNumber)
-                    << setw(12) << "*"
-                    << setw(12) << ("=" + litValue)
-                    << setw(12) << " "
-                    << " ";
-            litPrefix += "\n" + ss.str();
+            litPrefix += "\n" + to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR) + "\t" +
+                        to_string(currentBlockNumber) + "\t" + "*" + "\t" + "=" + litValue + "\t" + " " + "\t" + " ";
 
             if (litValue[0] == 'X') {
                 LOCCTR += (static_cast<int>(litValue.length()) - 3) / 2;

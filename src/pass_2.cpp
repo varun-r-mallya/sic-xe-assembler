@@ -118,6 +118,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData = "Line: " + std::to_string(lineNumber) +
                         " Index based addressing not supported with Indirect addressing";
             utilities::writeToFile(errorFile, writeData);
+            hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
@@ -140,6 +141,7 @@ std::string pass_2::createObjectCodeFormat34() {
                 // Can't fit it
                 writeData = "Line: " + std::to_string(lineNumber) + " Immediate value exceeds format limit";
                 utilities::writeToFile(errorFile, writeData);
+                hasError = true;
                 objcode = utilities::intToStringHex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
                 objcode += (halfBytes == 5) ? "100000" : "0000";
@@ -154,6 +156,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData = "Line " + std::to_string(lineNumber);
             writeData += " : Symbol doesn't exists. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
+            hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
@@ -232,6 +235,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData +=
                     " : Symbol doesn't exists.Index based addressing not supported with Indirect addressing ";
             utilities::writeToFile(errorFile, writeData);
+            hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
@@ -301,6 +305,7 @@ std::string pass_2::createObjectCodeFormat34() {
         writeData = "Line: " + std::to_string(lineNumber);
         writeData += "Can't fit into program counter based or base register based addressing.";
         utilities::writeToFile(errorFile, writeData);
+        hasError = true;
         objcode = utilities::intToStringHex(
             utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
         objcode += (halfBytes == 5) ? "100000" : "0000";
@@ -324,7 +329,7 @@ std::string pass_2::createObjectCodeFormat34() {
         if (tableStore->LITTAB[tempOperand].exists == 'n') {
             writeData = "Line " + std::to_string(lineNumber) + " : Symbol doesn't exists. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
-
+            hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             objcode += (halfBytes == 5) ? "000" : "0";
@@ -396,6 +401,7 @@ std::string pass_2::createObjectCodeFormat34() {
         writeData = "Line: " + std::to_string(lineNumber);
         writeData += "Can't fit into program counter based or base register based addressing.";
         utilities::writeToFile(errorFile, writeData);
+        hasError = true;
         objcode = utilities::intToStringHex(
             utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
         objcode += (halfBytes == 5) ? "100" : "0";
@@ -415,6 +421,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData = "Line " + std::to_string(lineNumber);
             writeData += " : Symbol doesn't exists. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
+            hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             if (halfBytes == 5)
@@ -492,6 +499,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData = "Line: " + std::to_string(lineNumber);
             writeData += "Can't fit into program counter based or base register based addressing.";
             utilities::writeToFile(errorFile, writeData);
+            hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             objcode += (halfBytes == 5)
@@ -567,7 +575,7 @@ void pass_2::run_pass_2() {
     std::getline(intermediateFile, tempBuffer); // Discard heading line
 
     utilities::writeToFile(listingFile, "Line\tAddress\tLabel\tOPCODE\tOPERAND\tObjectCode\tComment");
-    utilities::writeToFile(errorFile, "\n\n************PASS2************");
+    // utilities::writeToFile(errorFile, "\n\n************PASS2************");
 
     // Initialize variables
     objectCode = "";
@@ -631,6 +639,7 @@ void pass_2::run_pass_2() {
                             objectCode = utilities::getRealOpcode(opcode) + '0' + '0';
                             writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
                             utilities::writeToFile(errorFile, writeData);
+                            hasError = true;
                         }
                     } else {
                         // Two operands i.e. a,b
@@ -638,6 +647,7 @@ void pass_2::run_pass_2() {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
                             writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
                             utilities::writeToFile(errorFile, writeData);
+                            hasError = true;
                         } else if (utilities::getRealOpcode(opcode) == "SHIFTR" || utilities::getRealOpcode(opcode) ==
                                    "SHIFTL") {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
@@ -647,6 +657,7 @@ void pass_2::run_pass_2() {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
                             writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
                             utilities::writeToFile(errorFile, writeData);
+                            hasError = true;
                         } else {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          tableStore->REGTAB[operand1].num + tableStore->REGTAB[operand2].num;
@@ -684,12 +695,14 @@ void pass_2::run_pass_2() {
                 } else {
                     writeData = "Line " + std::to_string(lineNumber) + " : Symbol doesn't exists. Found " + operand;
                     utilities::writeToFile(errorFile, writeData);
+                    hasError = true;
                 }
                 objectCode = "";
             } else if (opcode == "NOBASE") {
                 if (nobase) {
                     writeData = "Line " + std::to_string(lineNumber) + ": Assembler wasn't using base addressing";
                     utilities::writeToFile(errorFile, writeData);
+                    hasError = true;
                 } else {
                     nobase = true;
                 }
@@ -758,4 +771,8 @@ pass_2::~pass_2() {
     objectFile.close();
     listingFile.close();
     errorFile.close();
+}
+
+bool pass_2::has_error() const {
+    return hasError;
 }

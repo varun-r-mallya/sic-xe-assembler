@@ -99,13 +99,14 @@ int main(const int argc, char *argv[]) {
 
     if (!output_intermediate) {
         std::filesystem::remove(intermediateFileName);
-        if (first_pass.get_error()) {
+        if (first_pass.get_error() || second_pass.has_error()) {
             if (std::ifstream error_file(errorFileName); error_file.is_open()) {
                 std::cerr << "Errors:" << "\n";
                 std::cerr << error_file.rdbuf();
                 error_file.close();
             }
         }
+        std::filesystem::remove(listingFileName);
         std::filesystem::remove(errorFileName);
     }
     return 0;
