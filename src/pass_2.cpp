@@ -152,80 +152,80 @@ std::string pass_2::createObjectCodeFormat34() {
                 objcode += utilities::intToStringHex(immediateValue, halfBytes);
             }
             return objcode;
-        } else if (tableStore->SYMTAB[tempOperand].exists == 'n') {
+        }
+        if (tableStore->SYMTAB[tempOperand].exists == 'n') {
             writeData = "Line " + std::to_string(lineNumber);
-            writeData += " : Symbol doesn't exists. Found " + tempOperand;
+            writeData += " : Symbol does not exist. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
             objcode = utilities::intToStringHex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
             return objcode;
-        } else {
-            int operandAddress = utilities::stringHexToInt(tableStore->SYMTAB[tempOperand].address) +
-                                 utilities::stringHexToInt(
-                                     tableStore->BLOCKS[BLocksNumToName[tableStore->SYMTAB[tempOperand].blockNumber]].
-                                     startAddress);
+        }
+        int operandAddress = utilities::stringHexToInt(tableStore->SYMTAB[tempOperand].address) +
+                             utilities::stringHexToInt(
+                                 tableStore->BLOCKS[BLocksNumToName[tableStore->SYMTAB[tempOperand].blockNumber]].
+                                 startAddress);
 
-            /*Process Immediate symbol value*/
-            if (halfBytes == 5) {
-                /*If format 4*/
+        /*Process Immediate symbol value*/
+        if (halfBytes == 5) {
+            /*If format 4*/
+            objcode = utilities::intToStringHex(
+                utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
+            objcode += '1';
+            objcode += utilities::intToStringHex(operandAddress, halfBytes);
+
+            /*add modifacation record here*/
+            modificationRecord += "M^" + utilities::intToStringHex(address + 1, 6) + '^';
+            modificationRecord += (halfBytes == 5) ? "05" : "03";
+            modificationRecord += '\n';
+
+            return objcode;
+        }
+
+        /*Handle format 3*/
+        program_counter = address + utilities::stringHexToInt(
+                              tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress);
+        program_counter += (halfBytes == 5) ? 4 : 3;
+        int relativeAddress = operandAddress - program_counter;
+
+        /*Try PC based*/
+        if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
+            objcode = utilities::intToStringHex(
+                utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
+            objcode += '2';
+            objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+            return objcode;
+        }
+
+        /*Try base based*/
+        if (!nobase) {
+            relativeAddress = operandAddress - base_register_value;
+            if (relativeAddress >= 0 && relativeAddress <= 4095) {
                 objcode = utilities::intToStringHex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
-                objcode += '1';
-                objcode += utilities::intToStringHex(operandAddress, halfBytes);
-
-                /*add modifacation record here*/
-                modificationRecord += "M^" + utilities::intToStringHex(address + 1, 6) + '^';
-                modificationRecord += (halfBytes == 5) ? "05" : "03";
-                modificationRecord += '\n';
-
-                return objcode;
-            }
-
-            /*Handle format 3*/
-            program_counter = address + utilities::stringHexToInt(
-                                  tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress);
-            program_counter += (halfBytes == 5) ? 4 : 3;
-            int relativeAddress = operandAddress - program_counter;
-
-            /*Try PC based*/
-            if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
-                objcode = utilities::intToStringHex(
-                    utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
-                objcode += '2';
+                objcode += '4';
                 objcode += utilities::intToStringHex(relativeAddress, halfBytes);
                 return objcode;
             }
+        }
 
-            /*Try base based*/
-            if (!nobase) {
-                relativeAddress = operandAddress - base_register_value;
-                if (relativeAddress >= 0 && relativeAddress <= 4095) {
-                    objcode = utilities::intToStringHex(
-                        utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
-                    objcode += '4';
-                    objcode += utilities::intToStringHex(relativeAddress, halfBytes);
-                    return objcode;
-                }
-            }
+        /*Use direct addressing with no PC or base*/
+        if (operandAddress <= 4095) {
+            objcode = utilities::intToStringHex(
+                utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
+            objcode += '0';
+            objcode += utilities::intToStringHex(operandAddress, halfBytes);
 
-            /*Use direct addressing with no PC or base*/
-            if (operandAddress <= 4095) {
-                objcode = utilities::intToStringHex(
-                    utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
-                objcode += '0';
-                objcode += utilities::intToStringHex(operandAddress, halfBytes);
+            /*add modifacation record here*/
+            modificationRecord += "M^" + utilities::intToStringHex(
+                address + 1 + utilities::stringHexToInt(
+                    tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
+            modificationRecord += (halfBytes == 5) ? "05" : "03";
+            modificationRecord += '\n';
 
-                /*add modifacation record here*/
-                modificationRecord += "M^" + utilities::intToStringHex(
-                    address + 1 + utilities::stringHexToInt(
-                        tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
-                modificationRecord += (halfBytes == 5) ? "05" : "03";
-                modificationRecord += '\n';
-
-                return objcode;
-            }
+            return objcode;
         }
     } else if (utilities::getFlagFormat(operand) == '@') {
         std::string tempOperand = operand.substr(1, operand.length() - 1);
@@ -412,9 +412,29 @@ std::string pass_2::createObjectCodeFormat34() {
         /*Handle direct addressing*/
         int xbpe = 0;
         std::string tempOperand = operand;
-        if (operand.substr(operand.length() - 2, 2) == ",X") {
-            tempOperand = operand.substr(0, operand.length() - 2);
-            xbpe = 8;
+        // Handle indexed addressing - check for both ",X" and ", X" (with space)
+        if (operand.length() >= 2) {
+            std::string lastTwo = operand.substr(operand.length() - 2, 2);
+            if (lastTwo == ",X") {
+                tempOperand = operand.substr(0, operand.length() - 2);
+                xbpe = 8;
+            } else if (operand.length() >= 3 && operand.substr(operand.length() - 3, 3) == ", X") {
+                // Handle space after comma
+                tempOperand = operand.substr(0, operand.length() - 3);
+                xbpe = 8;
+            }
+        }
+
+        // Safety check for empty operand
+        if (tempOperand.empty() || tempOperand == " ") {
+            writeData = "Line " + std::to_string(lineNumber);
+            writeData += " : Invalid operand. Found '" + operand + "'";
+            utilities::writeToFile(errorFile, writeData);
+            hasError = true;
+            objcode = utilities::intToStringHex(
+                utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
+            objcode += "0000";
+            return objcode;
         }
 
         if (tableStore->SYMTAB[tempOperand].exists == 'n') {
