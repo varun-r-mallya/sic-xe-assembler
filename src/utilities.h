@@ -4,10 +4,9 @@
 #include<string>
 #include<iomanip>
 
-class utilities
-{
+class utilities {
 public:
-    static int string_to_decimal(const std::string& str);
+    static int string_to_decimal(const std::string &str);
 
     static std::string getString(char c);
 
@@ -15,34 +14,33 @@ public:
 
     static std::string expandString(std::string data, int length, char fillChar, bool back = false);
 
-    static int stringHexToInt(const std::string& x);
+    static int stringHexToInt(const std::string &x);
 
-    static std::string stringToHexString(const std::string& input);
+    static std::string stringToHexString(const std::string &input);
 
     static bool checkWhiteSpace(char x);
 
-    static bool checkCommentLine(const std::string& line);
+    static bool checkCommentLine(const std::string &line);
 
-    static bool if_all_num(const std::string& x);
+    static bool if_all_num(const std::string &x);
 
-    static void readFirstNonWhiteSpace(const std::string& line, int& index, bool& status, std::string& data,
+    static void readFirstNonWhiteSpace(const std::string &line, int &index, bool &status, std::string &data,
                                        bool readTillEnd = false);
 
-    static void readByteOperand(const std::string& line, int& index, bool& status, std::string& data);
+    static void readByteOperand(const std::string &line, int &index, bool &status, std::string &data);
 
-    static void writeToFile(std::ofstream& file, const std::string& data, bool newline = true);
+    static void writeToFile(std::ofstream &file, const std::string &data, bool newline = true);
 
     static std::string getRealOpcode(std::string opcode);
 
-    static char getFlagFormat(const std::string& data);
+    static char getFlagFormat(const std::string &data);
 };
 
-class EvaluateString
-{
+class EvaluateString {
 public:
     int getResult();
 
-    explicit EvaluateString(const std::string& data);
+    explicit EvaluateString(const std::string &data);
 
 private:
     std::string storedData;
