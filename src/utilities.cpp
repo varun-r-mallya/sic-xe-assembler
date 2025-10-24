@@ -203,9 +203,10 @@ int EvaluateString::term() {
 int EvaluateString::factor() {
     if (peek() >= '0' && peek() <= '9') {
         return number();
-    } else if (peek() == '(') {
+    }
+    if (peek() == '(') {
         get();
-        int result = getResult();
+        const int result = getResult();
         get();
         return result;
     } else if (peek() == '-') {

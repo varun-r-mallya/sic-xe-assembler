@@ -7,7 +7,7 @@ SOURCES = $(wildcard src/*.cpp)
 
 OBJECTS = $(SOURCES:%.cpp=$(BUILDDIR)/%.o)
 
-TARGET = $(BUILDDIR)/program
+TARGET = $(BUILDDIR)/assembler
 
 all: $(TARGET)
 
@@ -32,6 +32,6 @@ clean:
 	rm -rf $(BUILDDIR)
 
 test:
-	./$(TARGET) tests/test.sic
+	./$(TARGET) -i tests/test.sic tests/test.out
 
 .PHONY: all clean

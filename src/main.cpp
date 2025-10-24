@@ -3,6 +3,7 @@
 #include <cstring>
 #include <filesystem>
 
+#include "pass_1.h"
 #include "table_store.h"
 
 void print_help(const char *program_name) {
@@ -54,6 +55,7 @@ int main(const int argc, char *argv[]) {
     std::cout << "Output intermediate files: " << (output_intermediate ? "yes" : "no") << "\n";
 
     auto tables = table_store();
+    auto first_pass = pass_1(input_file, &tables);
 
     return 0;
 }
