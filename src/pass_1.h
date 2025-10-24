@@ -20,6 +20,13 @@ class pass_1 {
     std::string firstExecutable_Sec;
 
 public:
+
+    std::string get_first_executable_sec();
+
+    std::string* get_blocks_num_to_name() const;
+
+    int get_program_length() const;
+
     pass_1(std::string filename, table_store *tables, const std::string &intermediateFileName,
            const std::string &errorFileName) {
         this->fileName = std::move(filename);

@@ -23,6 +23,18 @@ string formatIntermediateLine(const string &line, const string &address, const s
     return ss.str();
 }
 
+std::string pass_1::get_first_executable_sec() {
+    return firstExecutable_Sec;
+}
+
+std::string * pass_1::get_blocks_num_to_name() const {
+    return BLocksNumToName;
+}
+
+int pass_1::get_program_length() const {
+    return program_length;
+}
+
 bool pass_1::get_error() const {
     return error_flag;
 }

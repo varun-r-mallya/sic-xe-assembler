@@ -4,6 +4,7 @@
 #include <filesystem>
 
 #include "pass_1.h"
+#include "pass_2.h"
 #include "table_store.h"
 
 void print_help(const char *program_name) {
@@ -88,6 +89,13 @@ int main(const int argc, char *argv[]) {
                     << std::setw(20) << snd.value << "\n";
         }
     }
+
+    std::string listingFileName = input_file + ".listing";
+    std::string objectFileName = input_file + ".object";
+
+    auto second_pass = pass_2(input_file, &tables, intermediateFileName, objectFileName,
+                              listingFileName, errorFileName, first_pass.get_blocks_num_to_name(),
+                              first_pass.get_first_executable_sec(), first_pass.get_program_length());
 
     if (!output_intermediate) {
         std::filesystem::remove(intermediateFileName);

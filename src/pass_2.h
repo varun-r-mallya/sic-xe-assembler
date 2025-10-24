@@ -20,7 +20,7 @@ class pass_2 {
         std::string operand1, operand2;
 
         int lineNumber, blockNumber, address, startAddress;
-        std::string objectCode, writeData, currentRecord, modificationRecord, endRecord;
+        std::string objectCode, writeData, currentRecord, modificationRecord, endRecord, write_R_Data;
         int program_counter, base_register_value;
         bool nobase;
 
@@ -30,6 +30,7 @@ class pass_2 {
 
         static std::string readTillTab(const std::string &data, int &index);
         bool readIntermediateFile();
+        void writeRRecord();
         void writeTextRecord(bool lastRecord = false);
         std::string createObjectCodeFormat34();
         void writeEndRecord(bool write = true);

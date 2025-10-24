@@ -1,5 +1,6 @@
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -std=c++23 -O3 -fsanitize=address
+CXXFLAGS = -Wall -Wextra -std=c++23 -O3 \
+#-fsanitize=address
 
 BUILDDIR = build
 
