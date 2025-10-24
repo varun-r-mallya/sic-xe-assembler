@@ -7,19 +7,21 @@
 #include "table_store.h"
 
 
-class pass_1 {
+class pass_1
+{
     std::string fileName;
     bool error_flag = false;
-    table_store *tableStore;
+    table_store* tableStore;
     std::ifstream SourceFile;
     std::ofstream intermediateFile;
     std::ofstream errorFile;
     int program_length{};
-    std::string *BLocksNumToName{};
+    std::string* BLocksNumToName{};
     std::string firstExecutable_Sec;
 
 public:
-    pass_1(std::string filename, table_store *tables) {
+    pass_1(std::string filename, table_store* tables)
+    {
         this->fileName = std::move(filename);
         this->tableStore = tables;
         SourceFile.open(fileName);
@@ -28,7 +30,8 @@ public:
         run_pass_1();
     };
 
-    ~pass_1() {
+    ~pass_1()
+    {
         SourceFile.close();
         intermediateFile.close();
         errorFile.close();
@@ -36,9 +39,9 @@ public:
 
     void run_pass_1();
 
-    void evaluateExpression(std::string expression, bool &relative, std::string &tempOperand, int lineNumber);
+    void evaluateExpression(std::string expression, bool& relative, std::string& tempOperand, int lineNumber);
 
-    void handle_LTORG(std::string &litPrefix, int &lineNumberDelta, int lineNumber, int &LOCCTR, int &lastDeltaLOCCTR,
+    void handle_LTORG(std::string& litPrefix, int& lineNumberDelta, int lineNumber, int& LOCCTR, int& lastDeltaLOCCTR,
                       int currentBlockNumber) const;
 };
 

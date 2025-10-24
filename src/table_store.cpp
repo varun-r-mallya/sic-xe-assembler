@@ -1,6 +1,7 @@
 #include "table_store.h"
 
-void table_store::load_register_table() {
+void table_store::load_register_table()
+{
     REGTAB["A"].num = '0';
     REGTAB["A"].exists = 'y';
 
@@ -29,7 +30,8 @@ void table_store::load_register_table() {
     REGTAB["SW"].exists = 'y';
 }
 
-void table_store::load_blocks() {
+void table_store::load_blocks()
+{
     BLOCKS["DEFAULT"].exists = 'y';
     BLOCKS["DEFAULT"].name = "DEFAULT";
     BLOCKS["DEFAULT"].startAddress = "00000";
@@ -37,13 +39,15 @@ void table_store::load_blocks() {
     BLOCKS["DEFAULT"].LOCCTR = "0";
 }
 
-table_store::table_store() {
+table_store::table_store()
+{
     load_blocks();
     load_op_table();
     load_register_table();
 }
 
-void table_store::load_op_table() {
+void table_store::load_op_table()
+{
     OPTAB["ADD"].opcode = "18";
     OPTAB["ADD"].format = 3;
     OPTAB["ADD"].exists = 'y';
