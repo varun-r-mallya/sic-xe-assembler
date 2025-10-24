@@ -32,10 +32,9 @@ std::string utilities::expandString(std::string data, const int length, const ch
     if (back) {
         if (length <= data.length()) {
             return data.substr(0, length);
-        } else {
-            for (int i = length - data.length(); i > 0; i--) {
-                data += fillChar;
-            }
+        }
+        for (int i = length - data.length(); i > 0; i--) {
+            data += fillChar;
         }
     } else {
         if (length <= data.length()) {
@@ -54,7 +53,7 @@ int utilities::stringHexToInt(const std::string &x) {
 }
 
 std::string utilities::stringToHexString(const std::string &input) {
-    static const char *const lut = "0123456789ABCDEF";
+    static const auto lut = "0123456789ABCDEF";
     const size_t len = input.length();
 
     std::string output;
@@ -96,7 +95,7 @@ void utilities::readFirstNonWhiteSpace(const std::string &line, int &index, bool
     status = true;
     if (readTillEnd) {
         data = line.substr(index, line.length() - index);
-        if (data == "") {
+        if (data.empty()) {
             status = false;
         }
         return;
@@ -107,7 +106,7 @@ void utilities::readFirstNonWhiteSpace(const std::string &line, int &index, bool
         index++;
     }
 
-    if (data == "") {
+    if (data.empty()) {
         status = false;
     }
 
@@ -139,7 +138,7 @@ void utilities::readByteOperand(const std::string &line, int &index, bool &statu
         }
     }
 
-    if (data == "") {
+    if (data.empty()) {
         status = false;
     }
 
@@ -209,7 +208,8 @@ int EvaluateString::factor() {
         const int result = getResult();
         get();
         return result;
-    } else if (peek() == '-') {
+    }
+    if (peek() == '-') {
         get();
         return -factor();
     }
