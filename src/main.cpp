@@ -21,6 +21,7 @@ int main(const int argc, char* argv[])
 {
     std::string input_file;
     std::string output_file;
+    bool output_intermediate = false;
 
     for (int i = 1; i < argc; ++i)
     {
@@ -31,7 +32,6 @@ int main(const int argc, char* argv[])
         }
         if (std::strcmp(argv[i], "-i") == 0)
         {
-            bool output_intermediate = false;
             output_intermediate = true;
         }
         else if (input_file.empty())
@@ -50,11 +50,16 @@ int main(const int argc, char* argv[])
         }
     }
 
-    if (input_file.empty() || output_file.empty())
+    if (input_file.empty())
     {
-        std::cerr << "Error: Both Input and Output files are required\n";
+        std::cerr << "Error: Input file is required\n";
         print_help(argv[0]);
         return 1;
+    }
+
+    if (output_file.empty())
+    {
+        output_file = input_file + ".out";
     }
 
     if (!std::filesystem::exists(input_file))
@@ -63,18 +68,28 @@ int main(const int argc, char* argv[])
         return 1;
     }
 
-    // std::cout << "Input file: " << input_file << "\n";
-    // std::cout << "Output file: " << output_file << "\n";
-    // std::cout << "Output intermediate files: " << (output_intermediate ? "yes" : "no") << "\n";
-
     auto tables = table_store();
     auto first_pass = pass_1(input_file, &tables);
-    for (auto symbol_table = tables.SYMTAB; const auto& [fst, snd] : symbol_table)
-    {
-        std::cout << fst << std::setw(20) << snd.address << std::setw(20) << snd.blockNumber <<
-            std::setw(20) << snd.exists << std::setw(20)
-            << snd.name << std::setw(20) << snd.relative << "\n";
+    if (output_intermediate) {
+        std::ofstream symtab_file("SYMTAB.txt");
+        symtab_file << std::left << std::setw(10) << "Symbol" 
+                    << std::setw(20) << "Address"
+                    << std::setw(20) << "Block Number"
+                    << std::setw(20) << "Exists"
+                    << std::setw(20) << "Name"
+                    << std::setw(20) << "Relative" << "\n";
+        for (auto symbol_table = tables.SYMTAB; const auto& [fst, snd] : symbol_table)
+        {
+            symtab_file << std::left << std::setw(10) << fst 
+                        << std::setw(20) << snd.address 
+                        << std::setw(20) << snd.blockNumber 
+                        << std::setw(20) << snd.exists 
+                        << std::setw(20) << snd.name 
+                        << std::setw(20) << snd.relative << "\n";
+        }
     }
+
+
 
     return 0;
 }
