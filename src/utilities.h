@@ -46,7 +46,7 @@ private:
     std::string storedData;
     int index;
 
-    char peek() const;
+    [[nodiscard]] char peek() const;
 
     char get();
 

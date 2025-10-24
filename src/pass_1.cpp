@@ -23,8 +23,12 @@ string formatIntermediateLine(const string &line, const string &address, const s
     return ss.str();
 }
 
+bool pass_1::get_error() const {
+    return error_flag;
+}
+
 void pass_1::run_pass_1() {
-    utilities::writeToFile(errorFile, "**********PASS1************");
+    // utilities::writeToFile(errorFile, "**********PASS1************");
     utilities::writeToFile(intermediateFile,
                            formatIntermediateLine("Line", "Address", "Block", "Label", "OPCODE", "OPERAND", "Comment"));
     string fileLine;

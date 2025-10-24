@@ -55,7 +55,9 @@ int main(const int argc, char *argv[]) {
     }
 
     auto tables = table_store();
-    auto first_pass = pass_1(input_file, &tables);
+    std::string intermediateFileName = input_file + ".intermediate";
+    std::string errorFileName = input_file + ".error";
+    auto first_pass = pass_1(input_file, &tables, intermediateFileName, errorFileName);
     if (output_intermediate) {
         std::ofstream symtab_file("SYMTAB.txt");
         symtab_file << std::left << std::setw(10) << "Symbol"
@@ -87,6 +89,16 @@ int main(const int argc, char *argv[]) {
         }
     }
 
-
+    if (!output_intermediate) {
+        std::filesystem::remove(intermediateFileName);
+        if (first_pass.get_error()) {
+            if (std::ifstream error_file(errorFileName); error_file.is_open()) {
+                std::cerr << "Errors:" << "\n";
+                std::cerr << error_file.rdbuf();
+                error_file.close();
+            }
+        }
+        std::filesystem::remove(errorFileName);
+    }
     return 0;
 }

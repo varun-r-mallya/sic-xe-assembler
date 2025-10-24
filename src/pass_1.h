@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <utility>
+#include <iostream>
 
 #include "table_store.h"
 
@@ -19,20 +20,17 @@ class pass_1 {
     std::string firstExecutable_Sec;
 
 public:
-    pass_1(std::string filename, table_store *tables) {
+    pass_1(std::string filename, table_store *tables, const std::string &intermediateFileName,
+           const std::string &errorFileName) {
         this->fileName = std::move(filename);
         this->tableStore = tables;
         SourceFile.open(fileName);
-
-        // Extract directory path and filename from the source file path
-        const size_t lastSlash = fileName.find_last_of("/\\");
-        const std::string directory = (lastSlash != std::string::npos) ? fileName.substr(0, lastSlash + 1) : "";
-        const std::string baseFileName = (lastSlash != std::string::npos) ? fileName.substr(lastSlash + 1) : fileName;
-
-        intermediateFile.open(directory + "intermediate_" + baseFileName);
-        errorFile.open(directory + "error_" + baseFileName);
+        intermediateFile.open(intermediateFileName);
+        errorFile.open(errorFileName);
         run_pass_1();
     };
+
+    bool get_error() const;
 
     ~pass_1() {
         SourceFile.close();
