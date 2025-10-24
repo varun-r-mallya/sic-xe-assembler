@@ -25,8 +25,14 @@ public:
         this->fileName = std::move(filename);
         this->tableStore = tables;
         SourceFile.open(fileName);
-        intermediateFile.open("intermediate_" + fileName);
-        errorFile.open("error_" + fileName);
+
+        // Extract directory path and filename from the source file path
+        const size_t lastSlash = fileName.find_last_of("/\\");
+        const std::string directory = (lastSlash != std::string::npos) ? fileName.substr(0, lastSlash + 1) : "";
+        const std::string baseFileName = (lastSlash != std::string::npos) ? fileName.substr(lastSlash + 1) : fileName;
+
+        intermediateFile.open(directory + "intermediate_" + baseFileName);
+        errorFile.open(directory + "error_" + baseFileName);
         run_pass_1();
     };
 

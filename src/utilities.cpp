@@ -27,7 +27,7 @@ std::string utilities::intToStringHex(const int x, const int fill)
     s << std::setfill('0') << std::setw(fill) << std::hex << x;
     std::string temp = s.str();
     temp = temp.substr(temp.length() - fill, fill);
-    transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
+    std::ranges::transform(temp, temp.begin(), ::toupper);
     return temp;
 }
 
