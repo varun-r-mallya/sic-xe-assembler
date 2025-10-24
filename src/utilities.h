@@ -14,7 +14,7 @@ public:
 
     static std::string expandString(std::string data, int length, char fillChar, bool back = false);
 
-    static int stringHexToInt(const std::string &x);
+    static int stringHexToInt(const std::string &x, bool *success = nullptr);
 
     static std::string stringToHexString(const std::string &input);
 

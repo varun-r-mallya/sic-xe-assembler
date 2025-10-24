@@ -48,8 +48,32 @@ std::string utilities::expandString(std::string data, const int length, const ch
     return data;
 }
 
-int utilities::stringHexToInt(const std::string &x) {
-    return stoul(x, nullptr, 16);
+int utilities::stringHexToInt(const std::string &x, bool *success) {
+    // Set success to false by default if pointer provided
+    if (success) *success = false;
+
+    // Handle empty or invalid strings
+    if (x.empty() || x == " " || x == "-1") {
+        return 0;
+    }
+
+    // Trim whitespace
+    std::string trimmed = x;
+    trimmed.erase(0, trimmed.find_first_not_of(" \t\n\r"));
+    trimmed.erase(trimmed.find_last_not_of(" \t\n\r") + 1);
+
+    if (trimmed.empty()) {
+        return 0;
+    }
+
+    try {
+        int result = stoul(trimmed, nullptr, 16);
+        if (success) *success = true;
+        return result;
+    } catch (const std::exception& e) {
+        std::cerr << "Error converting '" << x << "' to hex: " << e.what() << std::endl;
+        return 0;
+    }
 }
 
 std::string utilities::stringToHexString(const std::string &input) {
@@ -92,26 +116,30 @@ bool utilities::if_all_num(const std::string &x) {
 void utilities::readFirstNonWhiteSpace(const std::string &line, int &index, bool &status, std::string &data,
                                        const bool readTillEnd) {
     data = "";
-    status = true;
-    if (readTillEnd) {
-        data = line.substr(index, line.length() - index);
-        if (data.empty()) {
-            status = false;
-        }
+    status = false;  // Default to false
+
+    // Boundary check
+    if (index < 0 || index >= line.length()) {
         return;
     }
+
+    if (readTillEnd) {
+        // Read from index to end of line
+        data = line.substr(index);
+        status = !data.empty();
+        return;
+    }
+
+    // Read until whitespace
     while (index < line.length() && !checkWhiteSpace(line[index])) {
-        //If no whitespace then data
         data += line[index];
         index++;
     }
 
-    if (data.empty()) {
-        status = false;
-    }
+    status = !data.empty();
 
+    // Skip trailing whitespace
     while (index < line.length() && checkWhiteSpace(line[index])) {
-        //Increase index to pass all whitespace
         index++;
     }
 }
