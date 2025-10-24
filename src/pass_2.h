@@ -2,8 +2,6 @@
 #define SIC_XE_ASSEMBLER_PASS_2_H
 
 
-class pass_2
-{
 };
 
 
