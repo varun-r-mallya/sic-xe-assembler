@@ -32,6 +32,7 @@ clean:
 	rm -rf $(BUILDDIR)
 
 test:
-	./$(TARGET) -i tests/test.sic tests/test.out
+	cp tests/test.sic build/test.sic
+	./$(TARGET) -h
 
 .PHONY: all clean
