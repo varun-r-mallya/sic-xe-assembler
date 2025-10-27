@@ -414,8 +414,7 @@ std::string pass_2::createObjectCodeFormat34() {
         std::string tempOperand = operand;
         // Handle indexed addressing - check for both ",X" and ", X" (with space)
         if (operand.length() >= 2) {
-            std::string lastTwo = operand.substr(operand.length() - 2, 2);
-            if (lastTwo == ",X") {
+            if (std::string lastTwo = operand.substr(operand.length() - 2, 2); lastTwo == ",X") {
                 tempOperand = operand.substr(0, operand.length() - 2);
                 xbpe = 8;
             } else if (operand.length() >= 3 && operand.substr(operand.length() - 3, 3) == ", X") {
@@ -536,13 +535,13 @@ std::string pass_2::createObjectCodeFormat34() {
 
 void pass_2::writeEndRecord(const bool write) {
     if (write) {
-        if (endRecord.length() > 0) {
+        if (!endRecord.empty()) {
             utilities::writeToFile(objectFile, endRecord);
         } else {
             writeEndRecord(false);
         }
     }
-    if (operand == "" || operand == " ") {
+    if (operand.empty() || operand == " ") {
         // If no operand of END
         endRecord = "E^" + utilities::intToStringHex(startAddress, 6);
     } else {
@@ -625,7 +624,7 @@ void pass_2::run_pass_2() {
     }
 
     int program_section_length;
-    if (tableStore->BLOCKS.size() > 1) {
+    if (tableStore->BLOCKS.size() <= 1) {
         program_section_length = program_length;
     } else {
         program_section_length = program_length;

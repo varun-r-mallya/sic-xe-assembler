@@ -15,14 +15,14 @@ class pass_2 {
         std::ofstream objectFile;
         std::ofstream listingFile;
         bool hasError = false;
-        bool isComment;
+        bool isComment{};
         std::string label, opcode, operand, comment;
         std::string operand1, operand2;
 
-        int lineNumber, blockNumber, address, startAddress;
+        int lineNumber{}, blockNumber{}, address{}, startAddress{};
         std::string objectCode, writeData, currentRecord, modificationRecord, endRecord;
-        int program_counter, base_register_value;
-        bool nobase;
+        int program_counter{}, base_register_value{};
+        bool nobase{};
 
         std::string *BLocksNumToName;
         std::string firstExecutable_Sec;
