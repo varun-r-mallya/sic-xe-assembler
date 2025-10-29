@@ -595,13 +595,6 @@ void pass_2::run_pass_2() {
     utilities::writeToFile(listingFile, "Line\tAddress\tLabel\tOPCODE\tOPERAND\tObjectCode\tComment");
     // utilities::writeToFile(errorFile, "\n\n************PASS2************");
 
-    // Initialize variables
-    objectCode = "";
-    currentRecord = "";
-    modificationRecord = "";
-    blockNumber = 0;
-    nobase = true;
-
     readIntermediateFile();
     while (isComment) {
         // Handle with previous comments

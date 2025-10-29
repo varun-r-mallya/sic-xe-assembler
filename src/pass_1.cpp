@@ -424,7 +424,7 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
         } else if (pairCount == 0) {
             /*absolute*/
             relative = false;
-            cout << valueString << endl;
+            // cout << valueString << endl;
             EvaluateString tempOBJ(valueString);
             tempOperand = utilities::intToStringHex(tempOBJ.getResult());
         } else {
