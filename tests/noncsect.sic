@@ -22,7 +22,7 @@ RDREC   CLEAR   X
         CLEAR   A
         CLEAR   S
         +LDT    #4096
-RLOOP   TD      'INPUT'
+RLOOP   TD      INPUT
         JEQ     RLOOP
         RD      INPUT
         COMPR   A,S

@@ -105,12 +105,29 @@ bool utilities::checkCommentLine(const std::string &line) {
 }
 
 bool utilities::if_all_num(const std::string &x) {
-    bool all_num = true;
-    int i = 0;
-    while (all_num && (i < x.length())) {
-        all_num &= isdigit(x[i++]);
+    // Handle empty string
+    if (x.empty()) {
+        return false;
     }
-    return all_num;
+
+    int start = 0;
+
+    // Allow leading negative sign
+    if (x[0] == '-' || x[0] == '+') {
+        if (x.length() == 1) {
+            return false;  // Just a sign, not a number
+        }
+        start = 1;
+    }
+
+    // Check remaining characters are digits
+    for (int i = start; i < x.length(); i++) {
+        if (!isdigit(x[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void utilities::readFirstNonWhiteSpace(const std::string &line, int &index, bool &status, std::string &data,
@@ -138,7 +155,6 @@ void utilities::readFirstNonWhiteSpace(const std::string &line, int &index, bool
 
     status = !data.empty();
 
-    // Skip trailing whitespace
     while (index < line.length() && checkWhiteSpace(line[index])) {
         index++;
     }

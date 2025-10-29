@@ -18,7 +18,18 @@ class pass_1 {
     int program_length{};
     std::string *BLocksNumToName{};
     std::string firstExecutable_Sec;
+    std::string fileLine;
+    std::string writeData, writeDataSuffix, writeDataPrefix;
+    int startAddress, LOCCTR, saveLOCCTR, lineNumber = 0, lastDeltaLOCCTR = 0, lineNumberDelta = 0;
+    int index = 0;
 
+    std::string currentBlockName = "DEFAULT";
+    int currentBlockNumber = 0;
+    int totalBlocks = 1;
+
+    bool statusCode;
+    std::string label, opcode, operand, comment;
+    std::string tempOperand;
 public:
 
     std::string get_first_executable_sec();
@@ -47,7 +58,7 @@ public:
 
     void run_pass_1();
 
-    void evaluateExpression(std::string expression, bool &relative, std::string &tempOperand, int lineNumber);
+    void evaluateExpression(std::string expression, bool &relative);
 
     void handle_LTORG(std::string &litPrefix, int &lineNumberDelta, int lineNumber, int &LOCCTR, int &lastDeltaLOCCTR,
                       int currentBlockNumber) const;

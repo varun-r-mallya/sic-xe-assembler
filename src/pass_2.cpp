@@ -124,7 +124,6 @@ std::string pass_2::createObjectCodeFormat34() {
             objcode += (halfBytes == 5) ? "100000" : "0000";
             return objcode;
         }
-
         std::string tempOperand = operand.substr(1, operand.length() - 1);
         if (utilities::if_all_num(tempOperand) || (
                 (tableStore->SYMTAB[tempOperand].exists == 'y') && (tableStore->SYMTAB[tempOperand].relative == 0))) {

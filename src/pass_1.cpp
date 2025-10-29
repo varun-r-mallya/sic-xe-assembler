@@ -34,21 +34,6 @@ bool pass_1::get_error() const {
 void pass_1::run_pass_1() {
     // utilities::writeToFile(errorFile, "**********PASS1************");
     utilities::writeToFile(intermediateFile, "Line\tAddress\tBlock\tLabel\tOPCODE\tOPERAND\tComment");
-    string fileLine;
-    string writeData, writeDataSuffix, writeDataPrefix;
-    int index = 0;
-
-    string currentBlockName = "DEFAULT";
-    int currentBlockNumber = 0;
-    int totalBlocks = 1;
-
-    bool statusCode;
-    string label, opcode, operand, comment;
-    string tempOperand;
-
-    int startAddress, LOCCTR, saveLOCCTR, lineNumber, lastDeltaLOCCTR, lineNumberDelta = 0;
-    lineNumber = 0;
-    lastDeltaLOCCTR = 0;
 
     getline(SourceFile, fileLine);
     lineNumber += 5;
@@ -67,18 +52,16 @@ void pass_1::run_pass_1() {
         utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
         utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
         startAddress = utilities::stringHexToInt(operand);
-        // cout<<startAddress<<endl;
-        // exit(0);
         LOCCTR = startAddress;
         writeData = to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
                    to_string(currentBlockNumber) + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
-        utilities::writeToFile(intermediateFile, writeData); // Write file to intermediate file
+        utilities::writeToFile(intermediateFile, writeData);
 
-        getline(SourceFile, fileLine); // Read next line
+        getline(SourceFile, fileLine);
         lineNumber += 5;
         index = 0;
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, label); // Parse label
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, opcode); // Parse OPCODE
+        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, label);
+        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, opcode);
     } else {
         startAddress = 0;
         LOCCTR = 0;
@@ -197,7 +180,7 @@ void pass_1::run_pass_1() {
                     bool relative;
                     // set error_flag to false
                     error_flag = false;
-                    evaluateExpression(operand, relative, tempOperand, lineNumber);
+                    evaluateExpression(operand, relative);
                     if (!error_flag) {
                         LOCCTR = utilities::stringHexToInt(tempOperand);
                     }
@@ -255,7 +238,7 @@ void pass_1::run_pass_1() {
                     }
 
                     // Code for reading whole operand
-                    evaluateExpression(operand, relative, tempOperand, lineNumber);
+                    evaluateExpression(operand, relative);
                 }
 
                 tableStore->SYMTAB[label].name = label;
@@ -338,8 +321,27 @@ void pass_1::run_pass_1() {
     program_length = LocctrArr[totalBlocks - 1] - startAddress;
 }
 
-void pass_1::evaluateExpression(std::string expression, bool &relative, std::string &tempOperand, int lineNumber
+void pass_1::evaluateExpression(std::string expression, bool &relative
 ) {
+    if (!expression.empty() && expression[0] == '#') {
+        string numPart = expression.substr(1);
+        if (utilities::if_all_num(numPart)) {
+            // It's an immediate numeric value, not a symbol
+            tempOperand = utilities::intToStringHex(utilities::string_to_decimal(numPart), 6);
+            relative = false;
+            return;
+        }
+        // Remove '#' for symbol lookup
+        expression = numPart;
+    }
+
+    // Handle pure numeric values
+    if (utilities::if_all_num(expression)) {
+        tempOperand = utilities::intToStringHex(utilities::string_to_decimal(expression), 6);
+        relative = false;
+        return;
+    }
+
     string singleOperand = "?";
     string singleOperator = "?";
     string valueString;

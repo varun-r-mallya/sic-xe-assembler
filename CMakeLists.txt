@@ -33,7 +33,11 @@ add_custom_target(run
 # Custom target for test
 add_custom_target(test
 				COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tests/test.sic ${CMAKE_BINARY_DIR}/test.sic
-				COMMAND ${CMAKE_BINARY_DIR}/assembler -h
+				COMMAND ${CMAKE_BINARY_DIR}/assembler test.sic
+				COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tests/noncsect.sic ${CMAKE_BINARY_DIR}/noncsect.sic
+				COMMAND ${CMAKE_BINARY_DIR}/assembler noncsect.sic
+				COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tests/fig2.11.sic ${CMAKE_BINARY_DIR}/fig2.11.sic
+				COMMAND ${CMAKE_BINARY_DIR}/assembler fig2.11.sic
 				DEPENDS assembler
 				WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 				COMMENT "Running test"
