@@ -1,7 +1,7 @@
 #ifndef SIC_XE_ASSEMBLER_TABLES_H
 #define SIC_XE_ASSEMBLER_TABLES_H
 
-#include<unordered_map>
+#include<map>
 #include<string>
 
 struct struct_opcode {
@@ -78,11 +78,11 @@ class table_store {
     void load_blocks();
 
 public:
-    std::unordered_map<std::string, struct_label> SYMTAB;
-    std::unordered_map<std::string, struct_opcode> OPTAB;
-    std::unordered_map<std::string, struct_register> REGTAB;
-    std::unordered_map<std::string, struct_literal> LITTAB;
-    std::unordered_map<std::string, struct_blocks> BLOCKS;
+    std::map<std::string, struct_label> SYMTAB;
+    std::map<std::string, struct_opcode> OPTAB;
+    std::map<std::string, struct_register> REGTAB;
+    std::map<std::string, struct_literal> LITTAB;
+    std::map<std::string, struct_blocks> BLOCKS;
 
     table_store();
 
