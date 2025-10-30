@@ -25,10 +25,10 @@ bool pass_2::readIntermediateFile() {
     std::string fileLine;
     bool tempStatus;
     int index = 0;
-    if (!getline(intermediateFile, fileLine)) {
+    if (!getline(intermediate_file_, fileLine)) {
         return false;
     }
-    lineNumber = utilities::string_to_decimal(readTillTab(fileLine, index));
+    line_number_ = utilities::string_to_decimal(readTillTab(fileLine, index));
 
     is_comment_ = fileLine[index] == '.';
     if (is_comment_) {
@@ -37,9 +37,9 @@ bool pass_2::readIntermediateFile() {
     }
     address = utilities::string_hex_to_int(readTillTab(fileLine, index));
     if (const std::string tempBuffer = readTillTab(fileLine, index); tempBuffer == " ") {
-        blockNumber = -1;
+        block_number_ = -1;
     } else {
-        blockNumber = utilities::string_to_decimal(tempBuffer);
+        block_number_ = utilities::string_to_decimal(tempBuffer);
     }
     label = readTillTab(fileLine, index);
     if (label == "-1") {
@@ -60,45 +60,45 @@ bool pass_2::readIntermediateFile() {
 
 void pass_2::writeTextRecord(const bool lastRecord) {
     if (lastRecord) {
-        if (!currentRecord.empty()) {
+        if (!current_record_.empty()) {
             // Write last text record
-            writeData = utilities::int_to_string_hex(static_cast<int>(currentRecord.length() / 2), 2) + '^' +
-                        currentRecord;
-            utilities::write_to_file(objectFile, writeData);
-            currentRecord = "";
+            write_data_ = utilities::int_to_string_hex(static_cast<int>(current_record_.length() / 2), 2) + '^' +
+                        current_record_;
+            utilities::write_to_file(object_file_, write_data_);
+            current_record_ = "";
         }
         return;
     }
-    if (!objectCode.empty()) {
-        if (currentRecord.empty()) {
-            writeData = "T^" + utilities::int_to_string_hex(
+    if (!object_code_.empty()) {
+        if (current_record_.empty()) {
+            write_data_ = "T^" + utilities::int_to_string_hex(
                             address + utilities::string_hex_to_int(
-                                tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-            utilities::write_to_file(objectFile, writeData, false);
+                                tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+            utilities::write_to_file(object_file_, write_data_, false);
         }
-        if ((currentRecord + objectCode).length() > 60) {
-            writeData = utilities::int_to_string_hex(static_cast<int>(currentRecord.length() / 2), 2) + '^' +
-                        currentRecord;
-            utilities::write_to_file(objectFile, writeData);
-            currentRecord = "";
-            writeData = "T^" + utilities::int_to_string_hex(
+        if ((current_record_ + object_code_).length() > 60) {
+            write_data_ = utilities::int_to_string_hex(static_cast<int>(current_record_.length() / 2), 2) + '^' +
+                        current_record_;
+            utilities::write_to_file(object_file_, write_data_);
+            current_record_ = "";
+            write_data_ = "T^" + utilities::int_to_string_hex(
                             address + utilities::string_hex_to_int(
-                                tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-            utilities::write_to_file(objectFile, writeData, false);
+                                tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+            utilities::write_to_file(object_file_, write_data_, false);
         }
 
-        currentRecord += objectCode;
+        current_record_ += object_code_;
     } else {
         if (opcode == "START" || opcode == "END" || opcode == "BASE" || opcode == "NOBASE" || opcode == "LTORG" ||
             opcode == "ORG" || opcode == "EQU") {
         } else {
             // Write current record if exists
-            if (!currentRecord.empty()) {
-                writeData = utilities::int_to_string_hex(static_cast<int>(currentRecord.length() / 2), 2) + '^' +
-                            currentRecord;
-                utilities::write_to_file(objectFile, writeData);
+            if (!current_record_.empty()) {
+                write_data_ = utilities::int_to_string_hex(static_cast<int>(current_record_.length() / 2), 2) + '^' +
+                            current_record_;
+                utilities::write_to_file(object_file_, write_data_);
             }
-            currentRecord = "";
+            current_record_ = "";
         }
     }
 }
@@ -114,10 +114,10 @@ std::string pass_2::createObjectCodeFormat34() {
     if (utilities::getFlagFormat(operand) == '#') {
         if (operand.substr(operand.length() - 2, 2) == ",X") {
             // Error handling for Immediate with index based
-            writeData = "Line: " + std::to_string(lineNumber) +
+            write_data_ = "Line: " + std::to_string(line_number_) +
                         " Index based addressing not supported with Indirect addressing";
-            utilities::write_to_file(errorFile, writeData);
-            hasError = true;
+            utilities::write_to_file(error_file_, write_data_);
+            has_error_ = true;
             object_code = utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             object_code += (halfBytes == 5) ? "100000" : "0000";
@@ -137,9 +137,9 @@ std::string pass_2::createObjectCodeFormat34() {
             /*Process Immediate value*/
             if (immediateValue >= (1 << 4 * halfBytes)) {
                 // Can't fit it
-                writeData = "Line: " + std::to_string(lineNumber) + " Immediate value exceeds format limit";
-                utilities::write_to_file(errorFile, writeData);
-                hasError = true;
+                write_data_ = "Line: " + std::to_string(line_number_) + " Immediate value exceeds format limit";
+                utilities::write_to_file(error_file_, write_data_);
+                has_error_ = true;
                 object_code = utilities::int_to_string_hex(
                     utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
                 object_code += (halfBytes == 5) ? "100000" : "0000";
@@ -152,10 +152,10 @@ std::string pass_2::createObjectCodeFormat34() {
             return object_code;
         }
         if (tableStore->SYMTAB[tempOperand].exists == 'n') {
-            writeData = "Line " + std::to_string(lineNumber);
-            writeData += " : Symbol does not exist. Found " + tempOperand;
-            utilities::write_to_file(errorFile, writeData);
-            hasError = true;
+            write_data_ = "Line " + std::to_string(line_number_);
+            write_data_ += " : Symbol does not exist. Found " + tempOperand;
+            utilities::write_to_file(error_file_, write_data_);
+            has_error_ = true;
             object_code = utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             object_code += (halfBytes == 5) ? "100000" : "0000";
@@ -173,17 +173,17 @@ std::string pass_2::createObjectCodeFormat34() {
             object_code += '1';
             object_code += utilities::int_to_string_hex(operand_address, halfBytes);
 
-            modificationRecord += "M^" + utilities::int_to_string_hex(address + 1, 6) + '^';
+            modification_record_ += "M^" + utilities::int_to_string_hex(address + 1, 6) + '^';
             if (halfBytes == 5)
-                modificationRecord += "05";
+                modification_record_ += "05";
             else
-                modificationRecord += "03";
-            modificationRecord += '\n';
+                modification_record_ += "03";
+            modification_record_ += '\n';
 
             return object_code;
         }
         program_counter = address + utilities::string_hex_to_int(
-                              tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress);
+                              tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress);
         if (halfBytes == 5)
             program_counter += 4;
         else
@@ -214,22 +214,22 @@ std::string pass_2::createObjectCodeFormat34() {
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             object_code += '0';
             object_code += utilities::int_to_string_hex(operand_address, halfBytes);
-            modificationRecord += "M^" + utilities::int_to_string_hex(
+            modification_record_ += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::string_hex_to_int(
-                    tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-            modificationRecord += (halfBytes == 5) ? "05" : "03";
-            modificationRecord += '\n';
+                    tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+            modification_record_ += (halfBytes == 5) ? "05" : "03";
+            modification_record_ += '\n';
 
             return object_code;
         }
     } else if (utilities::getFlagFormat(operand) == '@') {
         std::string tempOperand = operand.substr(1, operand.length() - 1);
         if (tempOperand.substr(tempOperand.length() - 2, 2) == ",X" || tableStore->SYMTAB[tempOperand].exists == 'n') {
-            writeData = "Line " + std::to_string(lineNumber);
-            writeData +=
+            write_data_ = "Line " + std::to_string(line_number_);
+            write_data_ +=
                     " : Symbol does not exist. Index based addressing not supported with Indirect addressing ";
-            utilities::write_to_file(errorFile, writeData);
-            hasError = true;
+            utilities::write_to_file(error_file_, write_data_);
+            has_error_ = true;
             object_code = utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
             object_code += (halfBytes == 5) ? "100000" : "0000";
@@ -240,7 +240,7 @@ std::string pass_2::createObjectCodeFormat34() {
                                  tableStore->BLOCKS[blocks_num_to_name[tableStore->SYMTAB[tempOperand].blockNumber]].
                                  startAddress);
         program_counter = address + utilities::string_hex_to_int(
-                              tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress);
+                              tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress);
         program_counter += (halfBytes == 5) ? 4 : 3;
 
         if (halfBytes == 3) {
@@ -272,11 +272,11 @@ std::string pass_2::createObjectCodeFormat34() {
                 object_code += utilities::int_to_string_hex(operandAddress, halfBytes);
 
                 /*add modifacation record here*/
-                modificationRecord += "M^" + utilities::int_to_string_hex(
+                modification_record_ += "M^" + utilities::int_to_string_hex(
                     address + 1 + utilities::string_hex_to_int(
-                        tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-                modificationRecord += (halfBytes == 5) ? "05" : "03";
-                modificationRecord += '\n';
+                        tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+                modification_record_ += (halfBytes == 5) ? "05" : "03";
+                modification_record_ += '\n';
 
                 return object_code;
             }
@@ -286,20 +286,20 @@ std::string pass_2::createObjectCodeFormat34() {
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
             object_code += '1';
             object_code += utilities::int_to_string_hex(operandAddress, halfBytes);
-            modificationRecord += "M^" + utilities::int_to_string_hex(
+            modification_record_ += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::string_hex_to_int(
-                    tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress),
+                    tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress),
                 6) + '^';
-            modificationRecord += (halfBytes == 5) ? "05" : "03";
-            modificationRecord += '\n';
+            modification_record_ += (halfBytes == 5) ? "05" : "03";
+            modification_record_ += '\n';
 
             return object_code;
         }
 
-        writeData = "Line: " + std::to_string(lineNumber);
-        writeData += "Cannot fit into program counter or base register based addressing.";
-        utilities::write_to_file(errorFile, writeData);
-        hasError = true;
+        write_data_ = "Line: " + std::to_string(line_number_);
+        write_data_ += "Cannot fit into program counter or base register based addressing.";
+        utilities::write_to_file(error_file_, write_data_);
+        has_error_ = true;
         object_code = utilities::int_to_string_hex(
             utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
         object_code += (halfBytes == 5) ? "100000" : "0000";
@@ -312,18 +312,18 @@ std::string pass_2::createObjectCodeFormat34() {
         if (tempOperand == "*") {
             tempOperand = "X'" + utilities::int_to_string_hex(address, 6) + "'";
             /*Add modification record for value created by operand `*` */
-            modificationRecord += "M^" + utilities::int_to_string_hex(
+            modification_record_ += "M^" + utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->LITTAB[tempOperand].address) + utilities::string_hex_to_int(
                     tableStore->BLOCKS[blocks_num_to_name[tableStore->LITTAB[tempOperand].blockNumber]].startAddress),
                 6) + '^';
-            modificationRecord += utilities::int_to_string_hex(6, 2);
-            modificationRecord += '\n';
+            modification_record_ += utilities::int_to_string_hex(6, 2);
+            modification_record_ += '\n';
         }
 
         if (tableStore->LITTAB[tempOperand].exists == 'n') {
-            writeData = "Line " + std::to_string(lineNumber) + " : Symbol doesn't exists. Found " + tempOperand;
-            utilities::write_to_file(errorFile, writeData);
-            hasError = true;
+            write_data_ = "Line " + std::to_string(line_number_) + " : Symbol doesn't exists. Found " + tempOperand;
+            utilities::write_to_file(error_file_, write_data_);
+            has_error_ = true;
             object_code = utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             object_code += (halfBytes == 5) ? "000" : "0";
@@ -336,7 +336,7 @@ std::string pass_2::createObjectCodeFormat34() {
                                  tableStore->BLOCKS[blocks_num_to_name[tableStore->LITTAB[tempOperand].blockNumber]].
                                  startAddress);
         program_counter = address + utilities::string_hex_to_int(
-                              tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress);
+                              tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress);
         program_counter += (halfBytes == 5) ? 4 : 3;
 
         if (halfBytes == 3) {
@@ -367,11 +367,11 @@ std::string pass_2::createObjectCodeFormat34() {
                 object_code += '0';
                 object_code += utilities::int_to_string_hex(operandAddress, halfBytes);
 
-                modificationRecord += "M^" + utilities::int_to_string_hex(
+                modification_record_ += "M^" + utilities::int_to_string_hex(
                     address + 1 + utilities::string_hex_to_int(
-                        tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-                modificationRecord += (halfBytes == 5) ? "05" : "03";
-                modificationRecord += '\n';
+                        tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+                modification_record_ += (halfBytes == 5) ? "05" : "03";
+                modification_record_ += '\n';
 
                 return object_code;
             }
@@ -381,20 +381,20 @@ std::string pass_2::createObjectCodeFormat34() {
             object_code += '1';
             object_code += utilities::int_to_string_hex(operandAddress, halfBytes);
 
-            modificationRecord += "M^" + utilities::int_to_string_hex(
+            modification_record_ += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::string_hex_to_int(
-                    tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress),
+                    tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress),
                 6) + '^';
-            modificationRecord += (halfBytes == 5) ? "05" : "03";
-            modificationRecord += '\n';
+            modification_record_ += (halfBytes == 5) ? "05" : "03";
+            modification_record_ += '\n';
 
             return object_code;
         }
 
-        writeData = "Line: " + std::to_string(lineNumber);
-        writeData += "Cannot fit into program counter or base register based addressing.";
-        utilities::write_to_file(errorFile, writeData);
-        hasError = true;
+        write_data_ = "Line: " + std::to_string(line_number_);
+        write_data_ += "Cannot fit into program counter or base register based addressing.";
+        utilities::write_to_file(error_file_, write_data_);
+        has_error_ = true;
         object_code = utilities::int_to_string_hex(
             utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
         object_code += (halfBytes == 5) ? "100" : "0";
@@ -419,10 +419,10 @@ std::string pass_2::createObjectCodeFormat34() {
 
         // Safety check for empty operand
         if (tempOperand.empty() || tempOperand == " ") {
-            writeData = "Line " + std::to_string(lineNumber);
-            writeData += " : Invalid operand. Found '" + operand + "'";
-            utilities::write_to_file(errorFile, writeData);
-            hasError = true;
+            write_data_ = "Line " + std::to_string(line_number_);
+            write_data_ += " : Invalid operand. Found '" + operand + "'";
+            utilities::write_to_file(error_file_, write_data_);
+            has_error_ = true;
             object_code = utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             object_code += "0000";
@@ -430,10 +430,10 @@ std::string pass_2::createObjectCodeFormat34() {
         }
 
         if (tableStore->SYMTAB[tempOperand].exists == 'n') {
-            writeData = "Line " + std::to_string(lineNumber);
-            writeData += " : Symbol doesn't exists. Found " + tempOperand;
-            utilities::write_to_file(errorFile, writeData);
-            hasError = true;
+            write_data_ = "Line " + std::to_string(line_number_);
+            write_data_ += " : Symbol doesn't exists. Found " + tempOperand;
+            utilities::write_to_file(error_file_, write_data_);
+            has_error_ = true;
             object_code = utilities::int_to_string_hex(
                 utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             if (halfBytes == 5)
@@ -448,7 +448,7 @@ std::string pass_2::createObjectCodeFormat34() {
                                  tableStore->BLOCKS[blocks_num_to_name[tableStore->SYMTAB[tempOperand].blockNumber]].
                                  startAddress);
         program_counter = address + utilities::string_hex_to_int(
-                              tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress);
+                              tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress);
         if (halfBytes == 5)
             program_counter += 4;
         else
@@ -483,11 +483,11 @@ std::string pass_2::createObjectCodeFormat34() {
                 object_code += utilities::int_to_string_hex(xbpe, 1);
                 object_code += utilities::int_to_string_hex(operandAddress, halfBytes);
 
-                modificationRecord += "M^" + utilities::int_to_string_hex(
+                modification_record_ += "M^" + utilities::int_to_string_hex(
                     address + 1 + utilities::string_hex_to_int(
-                        tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-                modificationRecord += (halfBytes == 5) ? "05" : "03";
-                modificationRecord += '\n';
+                        tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+                modification_record_ += (halfBytes == 5) ? "05" : "03";
+                modification_record_ += '\n';
 
                 return object_code;
             }
@@ -499,19 +499,19 @@ std::string pass_2::createObjectCodeFormat34() {
             object_code += utilities::int_to_string_hex(operandAddress, halfBytes);
 
             /*add modifacation record here*/
-            modificationRecord += "M^" + utilities::int_to_string_hex(
+            modification_record_ += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::string_hex_to_int(
-                    tableStore->BLOCKS[blocks_num_to_name[blockNumber]].startAddress), 6) + '^';
-            modificationRecord += (halfBytes == 5) ? "05" : "03";
-            modificationRecord += '\n';
+                    tableStore->BLOCKS[blocks_num_to_name[block_number_]].startAddress), 6) + '^';
+            modification_record_ += (halfBytes == 5) ? "05" : "03";
+            modification_record_ += '\n';
 
             return object_code;
         }
 
-        writeData = "Line: " + std::to_string(lineNumber);
-        writeData += "Cannot fit into program counter based or base register based addressing.";
-        utilities::write_to_file(errorFile, writeData);
-        hasError = true;
+        write_data_ = "Line: " + std::to_string(line_number_);
+        write_data_ += "Cannot fit into program counter based or base register based addressing.";
+        utilities::write_to_file(error_file_, write_data_);
+        has_error_ = true;
         object_code = utilities::int_to_string_hex(
             utilities::string_hex_to_int(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
         object_code += (halfBytes == 5)
@@ -527,19 +527,19 @@ std::string pass_2::createObjectCodeFormat34() {
 
 void pass_2::writeEndRecord(const bool write) {
     if (write) {
-        if (!endRecord.empty()) {
-            utilities::write_to_file(objectFile, endRecord);
+        if (!end_record_.empty()) {
+            utilities::write_to_file(object_file_, end_record_);
         } else {
             writeEndRecord(false);
         }
     }
     if (operand.empty() || operand == " ") {
-        endRecord = "E^" + utilities::int_to_string_hex(startAddress, 6);
+        end_record_ = "E^" + utilities::int_to_string_hex(start_address_, 6);
     } else {
         const int firstExecutableAddress =
-                utilities::string_hex_to_int(tableStore->SYMTAB[firstExecutable_Sec].address);
+                utilities::string_hex_to_int(tableStore->SYMTAB[first_executable_section_].address);
 
-        endRecord = "E^" + utilities::int_to_string_hex(firstExecutableAddress, 6) + "\n";
+        end_record_ = "E^" + utilities::int_to_string_hex(firstExecutableAddress, 6) + "\n";
     }
 }
 
@@ -549,29 +549,29 @@ pass_2::pass_2(std::string filename, table_store *tables, const std::string &int
     this->fileName = std::move(filename);
     this->tableStore = tables;
     this->blocks_num_to_name = blocksNumToName;
-    this->firstExecutable_Sec = firstExecutableSec;
+    this->first_executable_section_ = firstExecutableSec;
     this->program_length = progLength;
 
-    intermediateFile.open(intermediateFileName);
-    if (!intermediateFile) {
+    intermediate_file_.open(intermediateFileName);
+    if (!intermediate_file_) {
         std::cerr << "Unable to open file: " << intermediateFileName << std::endl;
         exit(1);
     }
 
-    objectFile.open(objectFileName);
-    if (!objectFile) {
+    object_file_.open(objectFileName);
+    if (!object_file_) {
         std::cerr << "Unable to open file: " << objectFileName << std::endl;
         exit(1);
     }
 
-    listingFile.open(listingFileName);
-    if (!listingFile) {
+    listing_file_.open(listingFileName);
+    if (!listing_file_) {
         std::cerr << "Unable to open file: " << listingFileName << std::endl;
         exit(1);
     }
 
-    errorFile.open(errorFileName, std::fstream::app);
-    if (!errorFile) {
+    error_file_.open(errorFileName, std::fstream::app);
+    if (!error_file_) {
         std::cerr << "Unable to open file: " << errorFileName << std::endl;
         exit(1);
     }
@@ -581,41 +581,36 @@ pass_2::pass_2(std::string filename, table_store *tables, const std::string &int
 
 void pass_2::run_pass_2() {
     std::string tempBuffer;
-    std::getline(intermediateFile, tempBuffer);
+    std::getline(intermediate_file_, tempBuffer);
 
-    utilities::write_to_file(listingFile, "Line\tAddress\tLabel\tOPCODE\tOPERAND\tObjectCode\tComment");
+    utilities::write_to_file(listing_file_, "Line\tAddress\tLabel\tOPCODE\tOPERAND\tObjectCode\tComment");
     // utilities::write_to_file(errorFile, "\n\nPASS2:");
 
     readIntermediateFile();
     while (is_comment_) {
-        writeData = std::to_string(lineNumber) + "\t" + comment;
-        utilities::write_to_file(listingFile, writeData);
+        write_data_ = std::to_string(line_number_) + "\t" + comment;
+        utilities::write_to_file(listing_file_, write_data_);
         readIntermediateFile();
     }
 
     if (opcode == "START") {
-        startAddress = address;
-        writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) + "\t" +
-                    std::to_string(blockNumber) + "\t" + label + "\t" + opcode + "\t" + operand +
-                    "\t" + objectCode + "\t" + comment;
-        utilities::write_to_file(listingFile, writeData);
+        start_address_ = address;
+        write_data_ = std::to_string(line_number_) + "\t" + utilities::int_to_string_hex(address) + "\t" +
+                    std::to_string(block_number_) + "\t" + label + "\t" + opcode + "\t" + operand +
+                    "\t" + object_code_ + "\t" + comment;
+        utilities::write_to_file(listing_file_, write_data_);
     } else {
         label = "";
-        startAddress = 0;
+        start_address_ = 0;
         address = 0;
     }
 
-    int program_section_length;
-    if (tableStore->BLOCKS.size() <= 1) {
-        program_section_length = program_length;
-    } else {
-        program_section_length = program_length;
-    }
+    const int program_section_length = program_length;
 
-    writeData = "H^" + utilities::expandString(label, 6, ' ', true) + '^' +
+    write_data_ = "H^" + utilities::expandString(label, 6, ' ', true) + '^' +
                 utilities::int_to_string_hex(address, 6) + '^' +
                 utilities::int_to_string_hex(program_section_length, 6);
-    utilities::write_to_file(objectFile, writeData);
+    utilities::write_to_file(object_file_, write_data_);
 
     readIntermediateFile();
 
@@ -623,7 +618,7 @@ void pass_2::run_pass_2() {
         if (!is_comment_) {
             if (tableStore->OPTAB[utilities::getRealOpcode(opcode)].exists == 'y') {
                 if (tableStore->OPTAB[utilities::getRealOpcode(opcode)].format == 1) {
-                    objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode;
+                    object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode;
                 } else if (tableStore->OPTAB[utilities::getRealOpcode(opcode)].format == 2) {
                     operand1 = operand.substr(0, operand.find(','));
                     operand2 = operand.substr(operand.find(',') + 1, operand.length() - operand.find(',') - 1);
@@ -631,61 +626,61 @@ void pass_2::run_pass_2() {
                     if (operand2 == operand) {
                         // If not two operand i.e. a
                         if (utilities::getRealOpcode(opcode) == "SVC") {
-                            objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
+                            object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          utilities::int_to_string_hex(utilities::string_to_decimal(operand1), 1) + '0';
                         } else if (tableStore->REGTAB[operand1].exists == 'y') {
-                            objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
+                            object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          tableStore->REGTAB[operand1].num + '0';
                         } else {
-                            objectCode = utilities::getRealOpcode(opcode) + '0' + '0';
-                            writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
-                            utilities::write_to_file(errorFile, writeData);
-                            hasError = true;
+                            object_code_ = utilities::getRealOpcode(opcode) + '0' + '0';
+                            write_data_ = "Line: " + std::to_string(line_number_) + " Invalid Register name";
+                            utilities::write_to_file(error_file_, write_data_);
+                            has_error_ = true;
                         }
                     } else {
                         // Two operands i.e. a,b
                         if (tableStore->REGTAB[operand1].exists == 'n') {
-                            objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
-                            writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
-                            utilities::write_to_file(errorFile, writeData);
-                            hasError = true;
+                            object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
+                            write_data_ = "Line: " + std::to_string(line_number_) + " Invalid Register name";
+                            utilities::write_to_file(error_file_, write_data_);
+                            has_error_ = true;
                         } else if (utilities::getRealOpcode(opcode) == "SHIFTR" || utilities::getRealOpcode(opcode) ==
                                    "SHIFTL") {
-                            objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
+                            object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          tableStore->REGTAB[operand1].num +
                                          utilities::int_to_string_hex(utilities::string_to_decimal(operand2), 1);
                         } else if (tableStore->REGTAB[operand2].exists == 'n') {
-                            objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
-                            writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
-                            utilities::write_to_file(errorFile, writeData);
-                            hasError = true;
+                            object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
+                            write_data_ = "Line: " + std::to_string(line_number_) + " Invalid Register name";
+                            utilities::write_to_file(error_file_, write_data_);
+                            has_error_ = true;
                         } else {
-                            objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
+                            object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          tableStore->REGTAB[operand1].num + tableStore->REGTAB[operand2].num;
                         }
                     }
                 } else if (tableStore->OPTAB[utilities::getRealOpcode(opcode)].format == 3) {
                     if (utilities::getRealOpcode(opcode) == "RSUB") {
-                        objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode;
-                        objectCode += (utilities::getFlagFormat(opcode) == '+') ? "000000" : "0000";
+                        object_code_ = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode;
+                        object_code_ += (utilities::getFlagFormat(opcode) == '+') ? "000000" : "0000";
                     } else {
-                        objectCode = createObjectCodeFormat34();
+                        object_code_ = createObjectCodeFormat34();
                     }
                 }
             } else if (opcode == "BYTE") {
                 if (operand[0] == 'X') {
-                    objectCode = operand.substr(2, operand.length() - 3);
+                    object_code_ = operand.substr(2, operand.length() - 3);
                 } else if (operand[0] == 'C') {
-                    objectCode = utilities::stringToHexString(operand.substr(2, operand.length() - 3));
+                    object_code_ = utilities::stringToHexString(operand.substr(2, operand.length() - 3));
                 }
             } else if (label == "*") {
                 if (opcode[1] == 'C') {
-                    objectCode = utilities::stringToHexString(opcode.substr(3, opcode.length() - 4));
+                    object_code_ = utilities::stringToHexString(opcode.substr(3, opcode.length() - 4));
                 } else if (opcode[1] == 'X') {
-                    objectCode = opcode.substr(3, opcode.length() - 4);
+                    object_code_ = opcode.substr(3, opcode.length() - 4);
                 }
             } else if (opcode == "WORD") {
-                objectCode = utilities::int_to_string_hex(utilities::string_to_decimal(operand), 6);
+                object_code_ = utilities::int_to_string_hex(utilities::string_to_decimal(operand), 6);
             } else if (opcode == "BASE") {
                 if (tableStore->SYMTAB[operand].exists == 'y') {
                     base_register_value = utilities::string_hex_to_int(tableStore->SYMTAB[operand].address) +
@@ -694,45 +689,45 @@ void pass_2::run_pass_2() {
                                                   blockNumber]].startAddress);
                     not_base = false;
                 } else {
-                    writeData = "Line " + std::to_string(lineNumber) + " : Symbol doesn't exists. Found " + operand;
-                    utilities::write_to_file(errorFile, writeData);
-                    hasError = true;
+                    write_data_ = "Line " + std::to_string(line_number_) + " : Symbol doesn't exists. Found " + operand;
+                    utilities::write_to_file(error_file_, write_data_);
+                    has_error_ = true;
                 }
-                objectCode = "";
+                object_code_ = "";
             } else if (opcode == "NOBASE") {
                 if (not_base) {
-                    writeData = "Line " + std::to_string(lineNumber) + ": Assembler wasn't using base addressing";
-                    utilities::write_to_file(errorFile, writeData);
-                    hasError = true;
+                    write_data_ = "Line " + std::to_string(line_number_) + ": Assembler wasn't using base addressing";
+                    utilities::write_to_file(error_file_, write_data_);
+                    has_error_ = true;
                 } else {
                     not_base = true;
                 }
-                objectCode = "";
+                object_code_ = "";
             } else {
-                objectCode = "";
+                object_code_ = "";
             }
 
             // Write to text record if any generated
             writeTextRecord();
 
-            if (blockNumber == -1 && address != -1) {
-                writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
+            if (block_number_ == -1 && address != -1) {
+                write_data_ = std::to_string(line_number_) + "\t" + utilities::int_to_string_hex(address) +
                             "\t" + " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" +
-                            objectCode + "\t" + comment;
+                            object_code_ + "\t" + comment;
             } else if (address == -1) {
-                writeData = std::to_string(lineNumber) + "\t" + " " + "\t" + " " + "\t" + label +
-                            "\t" + opcode + "\t" + operand + "\t" + objectCode + "\t" + comment;
+                write_data_ = std::to_string(line_number_) + "\t" + " " + "\t" + " " + "\t" + label +
+                            "\t" + opcode + "\t" + operand + "\t" + object_code_ + "\t" + comment;
             } else {
-                writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
-                            "\t" + std::to_string(blockNumber) + "\t" + label + "\t" + opcode + "\t" +
-                            operand + "\t" + objectCode + "\t" + comment;
+                write_data_ = std::to_string(line_number_) + "\t" + utilities::int_to_string_hex(address) +
+                            "\t" + std::to_string(block_number_) + "\t" + label + "\t" + opcode + "\t" +
+                            operand + "\t" + object_code_ + "\t" + comment;
             }
         } else {
-            writeData = std::to_string(lineNumber) + "\t" + comment;
+            write_data_ = std::to_string(line_number_) + "\t" + comment;
         }
-        utilities::write_to_file(listingFile, writeData);
+        utilities::write_to_file(listing_file_, write_data_);
         readIntermediateFile();
-        objectCode = "";
+        object_code_ = "";
     }
 
     writeTextRecord(true);
@@ -740,40 +735,40 @@ void pass_2::run_pass_2() {
     writeEndRecord(false);
 
     if (!is_comment_) {
-        writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
+        write_data_ = std::to_string(line_number_) + "\t" + utilities::int_to_string_hex(address) +
                     "\t" + " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + "" +
                     "\t" + comment;
     } else {
-        writeData = std::to_string(lineNumber) + "\t" + comment;
+        write_data_ = std::to_string(line_number_) + "\t" + comment;
     }
-    utilities::write_to_file(listingFile, writeData);
+    utilities::write_to_file(listing_file_, write_data_);
 
     while (readIntermediateFile()) {
         if (label == "*") {
             if (opcode[1] == 'C') {
-                objectCode = utilities::stringToHexString(opcode.substr(3, opcode.length() - 4));
+                object_code_ = utilities::stringToHexString(opcode.substr(3, opcode.length() - 4));
             } else if (opcode[1] == 'X') {
-                objectCode = opcode.substr(3, opcode.length() - 4);
+                object_code_ = opcode.substr(3, opcode.length() - 4);
             }
             writeTextRecord();
         }
-        writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
-                    "\t" + std::to_string(blockNumber) + label + "\t" + opcode + "\t" + operand +
-                    "\t" + objectCode + "\t" + comment;
-        utilities::write_to_file(listingFile, writeData);
+        write_data_ = std::to_string(line_number_) + "\t" + utilities::int_to_string_hex(address) +
+                    "\t" + std::to_string(block_number_) + label + "\t" + opcode + "\t" + operand +
+                    "\t" + object_code_ + "\t" + comment;
+        utilities::write_to_file(listing_file_, write_data_);
     }
 
-    utilities::write_to_file(objectFile, modificationRecord, false);
+    utilities::write_to_file(object_file_, modification_record_, false);
     writeEndRecord(true);
 }
 
 pass_2::~pass_2() {
-    intermediateFile.close();
-    objectFile.close();
-    listingFile.close();
-    errorFile.close();
+    intermediate_file_.close();
+    object_file_.close();
+    listing_file_.close();
+    error_file_.close();
 }
 
 bool pass_2::has_error() const {
-    return hasError;
+    return has_error_;
 }

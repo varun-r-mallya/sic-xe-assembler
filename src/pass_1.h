@@ -9,27 +9,27 @@
 
 
 class pass_1 {
-    std::string fileName;
+    std::string file_name_;
     bool error_flag = false;
-    table_store *tableStore;
-    std::ifstream SourceFile;
-    std::ofstream intermediateFile;
-    std::ofstream errorFile;
+    table_store *table_store_;
+    std::ifstream source_file_;
+    std::ofstream intermediate_file_;
+    std::ofstream error_file_;
     int program_length{};
-    std::string *BLocksNumToName{};
-    std::string firstExecutable_Sec;
-    std::string fileLine;
-    std::string writeData, writeDataSuffix, writeDataPrefix;
-    int startAddress{}, LOCCTR{}, saveLOCCTR{}, lineNumber = 0, lastDeltaLOCCTR = 0, lineNumberDelta = 0;
+    std::string *blocks_num_to_name_{};
+    std::string first_executable_section_;
+    std::string file_line_;
+    std::string write_data_, write_data_suffix_, write_data_prefix_;
+    int start_address_{}, location_counter{}, save_location_counter{}, line_number_ = 0, last_location_counter = 0, line_number_diff = 0;
     int index = 0;
 
-    std::string currentBlockName = "DEFAULT";
-    int currentBlockNumber = 0;
-    int totalBlocks = 1;
+    std::string current_block_ = "DEFAULT";
+    int current_blk_num = 0;
+    int total_blocks_ = 1;
 
-    bool statusCode{};
+    bool status_code_{};
     std::string label, opcode, operand, comment;
-    std::string tempOperand;
+    std::string temp_operand_;
 public:
 
     auto get_first_executable_sec() -> std::string;
@@ -44,9 +44,9 @@ public:
     auto get_error() const -> bool;
 
     ~pass_1() {
-        SourceFile.close();
-        intermediateFile.close();
-        errorFile.close();
+        source_file_.close();
+        intermediate_file_.close();
+        error_file_.close();
     }
 
     auto run_pass_1() -> void;
