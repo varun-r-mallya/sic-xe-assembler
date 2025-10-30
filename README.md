@@ -1,13 +1,11 @@
-# SIC-XE Assembler
-Course Project for CSO-101.  
-This SIC-XE assembler can handle program blocks, but cannot handle control sections due to the required evaluation criterion for even numbered enrollments (23117144). 
+# SIC-XE Assembler 
+This SIC-XE assembler can handle program blocks, but does not handle control sections. 
 ## To run:
 ```bash
-$ mkdir -p build
-$ cd build
-$ cmake ..
-$ make
-$ cp ../tests/test.sic .
-$ ./assembler test.sic
+  mkdir -p build
+  cd build
+  cmake ..
+  make test
+  
 ```
 Note: If intermediate files are required, then use the `-i` flag like `./assembler -i test.sic`
