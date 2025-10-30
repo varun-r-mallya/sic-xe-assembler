@@ -31,11 +31,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="change types to size_t to avoid compiler warnings">
-      <change beforePath="$PROJECT_DIR$/src/pass_1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_1.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pass_2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.h" afterDir="false" />
+    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="janitorial">
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fig2.11.sic" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fig2.11.sic" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +149,7 @@
       <workItem from="1761541417309" duration="11000" />
       <workItem from="1761715307491" duration="3238000" />
       <workItem from="1761742125382" duration="4051000" />
-      <workItem from="1761802249143" duration="6360000" />
+      <workItem from="1761802249143" duration="7142000" />
     </task>
     <task id="LOCAL-00001" summary="infinite loop error">
       <option name="closed" value="true" />
@@ -233,7 +231,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761813615377</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="compile error janitorial">
+      <option name="closed" value="true" />
+      <created>1761814043822</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1761814043822</updated>
+    </task>
+    <task id="LOCAL-00012" summary="janitorial">
+      <option name="closed" value="true" />
+      <created>1761814095631</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1761814095631</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -266,6 +280,8 @@
     <MESSAGE value="variable case changes" />
     <MESSAGE value="format chore" />
     <MESSAGE value="change types to size_t to avoid compiler warnings" />
-    <option name="LAST_COMMIT_MESSAGE" value="change types to size_t to avoid compiler warnings" />
+    <MESSAGE value="compile error janitorial" />
+    <MESSAGE value="janitorial" />
+    <option name="LAST_COMMIT_MESSAGE" value="janitorial" />
   </component>
 </project>

@@ -56,10 +56,40 @@ int main(const int argc, char *argv[]) {
         return 1;
     }
 
+    std::string tempInputFile = input_file + ".preprocessed"; {
+        std::ifstream in(input_file);
+        std::ofstream out(tempInputFile);
+        if (!in.is_open()) {
+            std::cerr << "Error: Could not open input file for preprocessing\n";
+            return 1;
+        }
+        std::string line;
+        while (std::getline(in, line)) {
+            // Remove leading whitespace for checks
+            std::string trimmed = line;
+            trimmed.erase(0, trimmed.find_first_not_of(" \t\r\n"));
+            // Remove trailing whitespace for "USE" check
+            std::string trimmed_end = trimmed;
+            trimmed_end.erase(trimmed_end.find_last_not_of(" \t\r\n") + 1);
+
+            if (trimmed.empty()) continue; // skip empty/whitespace-only lines
+            if (!trimmed.empty() && trimmed[0] == '.') continue; // skip lines starting with '.'
+            if (trimmed_end == "USE") {
+                out << "\t\tUSE\t\tDEFAULT" << std::endl;
+            } else {
+                out << line << std::endl;
+            }
+        }
+        in.close();
+        out.close();
+    }
+
+    const std::string &actual_input_file = tempInputFile;
+
     auto tables = table_store();
     std::string intermediateFileName = input_file + ".intermediate";
     std::string errorFileName = input_file + ".error";
-    auto first_pass = pass_1(input_file, &tables, intermediateFileName, errorFileName);
+    auto first_pass = pass_1(actual_input_file, &tables, intermediateFileName, errorFileName);
     if (output_intermediate) {
         std::ofstream symtab_file("SYMTAB.txt");
         symtab_file << std::left << std::setw(10) << "Symbol"
@@ -109,6 +139,7 @@ int main(const int argc, char *argv[]) {
         }
         std::filesystem::remove(listingFileName);
         std::filesystem::remove(errorFileName);
+        std::filesystem::remove(actual_input_file);
     }
     return 0;
 }

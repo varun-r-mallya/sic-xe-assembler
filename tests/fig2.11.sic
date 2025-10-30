@@ -19,7 +19,7 @@ LENGTH  RESW    1
 BUFFER  RESB    4096
 BUFEND  EQU     *
 MAXLEN  EQU     BUFEND-BUFFER
-        USE     DEFAULT
+        USE
 RDREC   CLEAR   X
         CLEAR   A
         CLEAR   S
@@ -36,7 +36,13 @@ EXIT    STX     LENGTH
         RSUB
         USE     CDATA
 INPUT   BYTE    X'F1'
-        USE     DEFAULT
+        USE
+
+        .
+        .
+        .
+        .
+        . WRREC section ahead
 WRREC   CLEAR   X
         LDT     LENGTH
 WLOOP   TD      =X'05'
