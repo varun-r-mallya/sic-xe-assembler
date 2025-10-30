@@ -47,7 +47,8 @@ int main(const int argc, char *argv[]) {
     }
 
     if (output_file.empty()) {
-        output_file = input_file + ".out";
+        output_file = input_file;
+        output_file.append(".out");
     }
 
     if (!std::filesystem::exists(input_file)) {

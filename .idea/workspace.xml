@@ -6,6 +6,7 @@
   <component name="BackendCodeEditorMiscSettings">
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue" value="true" type="bool" />
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
   <component name="CMakePresetLoader">{
@@ -30,9 +31,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="Fix example and error">
+    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="unordered map to map to match with textbook">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/table_store.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/table_store.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pass_1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_1.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pass_1.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_1.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pass_2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pass_2.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +156,7 @@
       <workItem from="1761541417309" duration="11000" />
       <workItem from="1761715307491" duration="3238000" />
       <workItem from="1761742125382" duration="4051000" />
-      <workItem from="1761802249143" duration="3054000" />
+      <workItem from="1761802249143" duration="4903000" />
     </task>
     <task id="LOCAL-00001" summary="infinite loop error">
       <option name="closed" value="true" />
@@ -190,7 +198,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761808789649</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="unordered map to map to match with textbook">
+      <option name="closed" value="true" />
+      <created>1761810913753</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1761810913753</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,17 +234,7 @@
     <MESSAGE value="add editor files" />
     <MESSAGE value="class-ify pass1 and pass2" />
     <MESSAGE value="Fix example and error" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix example and error" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/pass_1.cpp</url>
-          <line>443</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="unordered map to map to match with textbook" />
+    <option name="LAST_COMMIT_MESSAGE" value="unordered map to map to match with textbook" />
   </component>
 </project>

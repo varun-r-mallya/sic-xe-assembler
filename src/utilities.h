@@ -14,7 +14,7 @@ public:
 
     static std::string expandString(std::string data, int length, char fillChar, bool back = false);
 
-    static int stringHexToInt(const std::string &x, bool *success = nullptr);
+    static int string_hex_to_int(const std::string &x, bool *success = nullptr);
 
     static std::string stringToHexString(const std::string &input);
 
@@ -24,12 +24,12 @@ public:
 
     static bool if_all_num(const std::string &x);
 
-    static void readFirstNonWhiteSpace(const std::string &line, int &index, bool &status, std::string &data,
+    static void first_non_whitespace(const std::string &line, int &index, bool &status, std::string &data,
                                        bool readTillEnd = false);
 
     static void readByteOperand(const std::string &line, int &index, bool &status, std::string &data);
 
-    static void writeToFile(std::ofstream &file, const std::string &data, bool newline = true);
+    static void write_to_file(std::ofstream &file, const std::string &data, bool newline = true);
 
     static std::string getRealOpcode(std::string opcode);
 

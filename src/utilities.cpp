@@ -48,7 +48,7 @@ std::string utilities::expandString(std::string data, const int length, const ch
     return data;
 }
 
-int utilities::stringHexToInt(const std::string &x, bool *success) {
+int utilities::string_hex_to_int(const std::string &x, bool *success) {
     // Set success to false by default if pointer provided
     if (success) *success = false;
 
@@ -130,7 +130,7 @@ bool utilities::if_all_num(const std::string &x) {
     return true;
 }
 
-void utilities::readFirstNonWhiteSpace(const std::string &line, int &index, bool &status, std::string &data,
+void utilities::first_non_whitespace(const std::string &line, int &index, bool &status, std::string &data,
                                        const bool readTillEnd) {
     data = "";
     status = false;  // Default to false
@@ -192,7 +192,7 @@ void utilities::readByteOperand(const std::string &line, int &index, bool &statu
     }
 }
 
-void utilities::writeToFile(std::ofstream &file, const std::string &data, const bool newline) {
+void utilities::write_to_file(std::ofstream &file, const std::string &data, const bool newline) {
     if (newline) {
         file << data << std::endl;
     } else {

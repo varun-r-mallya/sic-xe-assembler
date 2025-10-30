@@ -15,24 +15,24 @@ class pass_2 {
         std::ofstream objectFile;
         std::ofstream listingFile;
         bool hasError = false;
-        bool isComment{};
+        bool is_comment_{};
         std::string label, opcode, operand, comment;
         std::string operand1, operand2;
 
         int lineNumber{}, blockNumber = 0, address{}, startAddress{};
         std::string objectCode, writeData, currentRecord, modificationRecord, endRecord;
         int program_counter{}, base_register_value{};
-        bool nobase = true;
+        bool not_base = true;
 
-        std::string *BLocksNumToName;
+        std::string *blocks_num_to_name;
         std::string firstExecutable_Sec;
         int program_length;
 
-        static std::string readTillTab(const std::string &data, int &index);
-        bool readIntermediateFile();
-        void writeTextRecord(bool lastRecord = false);
-        std::string createObjectCodeFormat34();
-        void writeEndRecord(bool write = true);
+        static auto readTillTab(const std::string &data, int &index) -> std::string;
+        auto readIntermediateFile() -> bool;
+        auto writeTextRecord(bool lastRecord = false) -> void;
+        auto createObjectCodeFormat34() -> std::string;
+        auto writeEndRecord(bool write = true) -> void;
 
     public:
         pass_2(std::string filename, table_store *tables, const std::string &intermediateFileName,
@@ -40,11 +40,11 @@ class pass_2 {
                const std::string &errorFileName, std::string *blocksNumToName,
                const std::string &firstExecutableSec, int progLength);
 
-        void run_pass_2();
+        auto run_pass_2() -> void;
 
         ~pass_2();
 
-        bool has_error() const;
+        auto has_error() const -> bool;
 };
 
 

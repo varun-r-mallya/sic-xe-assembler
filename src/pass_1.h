@@ -20,35 +20,28 @@ class pass_1 {
     std::string firstExecutable_Sec;
     std::string fileLine;
     std::string writeData, writeDataSuffix, writeDataPrefix;
-    int startAddress, LOCCTR, saveLOCCTR, lineNumber = 0, lastDeltaLOCCTR = 0, lineNumberDelta = 0;
+    int startAddress{}, LOCCTR{}, saveLOCCTR{}, lineNumber = 0, lastDeltaLOCCTR = 0, lineNumberDelta = 0;
     int index = 0;
 
     std::string currentBlockName = "DEFAULT";
     int currentBlockNumber = 0;
     int totalBlocks = 1;
 
-    bool statusCode;
+    bool statusCode{};
     std::string label, opcode, operand, comment;
     std::string tempOperand;
 public:
 
-    std::string get_first_executable_sec();
+    auto get_first_executable_sec() -> std::string;
 
-    std::string* get_blocks_num_to_name() const;
+    auto get_blocks_num_to_name() const -> std::string *;
 
-    int get_program_length() const;
+    auto get_program_length() const -> int;
 
     pass_1(std::string filename, table_store *tables, const std::string &intermediateFileName,
-           const std::string &errorFileName) {
-        this->fileName = std::move(filename);
-        this->tableStore = tables;
-        SourceFile.open(fileName);
-        intermediateFile.open(intermediateFileName);
-        errorFile.open(errorFileName);
-        run_pass_1();
-    };
+           const std::string &errorFileName);;
 
-    bool get_error() const;
+    auto get_error() const -> bool;
 
     ~pass_1() {
         SourceFile.close();
@@ -56,12 +49,11 @@ public:
         errorFile.close();
     }
 
-    void run_pass_1();
+    auto run_pass_1() -> void;
 
-    void evaluateExpression(std::string expression, bool &relative);
+    auto eval_expr(std::string expression, bool &relative) -> void;
 
-    void handle_LTORG(std::string &litPrefix, int &lineNumberDelta, int lineNumber, int &LOCCTR, int &lastDeltaLOCCTR,
-                      int currentBlockNumber) const;
+    auto handle_LTORG(std::string &litPrefix) -> void;
 };
 
 

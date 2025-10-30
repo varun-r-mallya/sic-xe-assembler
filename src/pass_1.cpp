@@ -27,41 +27,51 @@ int pass_1::get_program_length() const {
     return program_length;
 }
 
+pass_1::pass_1(std::string filename, table_store *tables, const std::string &intermediateFileName,
+    const std::string &errorFileName) {
+    this->fileName = std::move(filename);
+    this->tableStore = tables;
+    SourceFile.open(fileName);
+    intermediateFile.open(intermediateFileName);
+    errorFile.open(errorFileName);
+    run_pass_1();
+}
+
 bool pass_1::get_error() const {
     return error_flag;
 }
 
 void pass_1::run_pass_1() {
-    utilities::writeToFile(errorFile, "**********PASS1************");
-    utilities::writeToFile(intermediateFile, "Line\tAddress\tBlock\tLabel\tOPCODE\tOPERAND\tComment");
+    // utilities::writeToFile(errorFile, "**********PASS1************");
+    utilities::write_to_file(intermediateFile, "Line\tAddress\tBlock\tLabel\tOPCODE\tOPERAND\tComment");
 
     getline(SourceFile, fileLine);
     lineNumber += 5;
     while (utilities::checkCommentLine(fileLine)) {
         writeData = to_string(lineNumber) + "\t" + fileLine;
-        utilities::writeToFile(intermediateFile, writeData);
+        utilities::write_to_file(intermediateFile, writeData);
         getline(SourceFile, fileLine); // read first input line
         lineNumber += 5;
         index = 0;
     }
 
-    utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, label);
-    utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, opcode);
+    utilities::first_non_whitespace(fileLine, index, statusCode, label);
+    utilities::first_non_whitespace(fileLine, index, statusCode, opcode);
 
     if (opcode == "START") {
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
-        startAddress = utilities::stringHexToInt(operand);
+        utilities::first_non_whitespace(fileLine, index, statusCode, operand);
+        utilities::first_non_whitespace(fileLine, index, statusCode, comment, true);
+        startAddress = utilities::string_hex_to_int(operand);
         LOCCTR = startAddress;
         writeData = to_string(lineNumber) + "\t" + utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" +
                    to_string(currentBlockNumber) + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
-        utilities::writeToFile(intermediateFile, writeData);
+        utilities::write_to_file(intermediateFile, writeData);
 
         getline(SourceFile, fileLine);
         lineNumber += 5;
         index = 0;
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, label);
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, opcode);
+        utilities::first_non_whitespace(fileLine, index, statusCode, label);
+        utilities::first_non_whitespace(fileLine, index, statusCode, opcode);
     } else {
         startAddress = 0;
         LOCCTR = 0;
@@ -80,7 +90,7 @@ void pass_1::run_pass_1() {
                 } else {
                     writeData = "Line: " + to_string(lineNumber) + " : Duplicate symbol for '" + label +
                                 "'. Previously defined at " + tableStore->SYMTAB[label].address;
-                    utilities::writeToFile(errorFile, writeData);
+                    utilities::write_to_file(errorFile, writeData);
                     error_flag = true;
                 }
             }
@@ -96,9 +106,9 @@ void pass_1::run_pass_1() {
                     if (utilities::getRealOpcode(opcode) == "RSUB") {
                         operand = " ";
                     } else {
-                        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                        utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                         if (operand[operand.length() - 1] == ',') {
-                            utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, tempOperand);
+                            utilities::first_non_whitespace(fileLine, index, statusCode, tempOperand);
                             operand += tempOperand;
                         }
                     }
@@ -122,22 +132,22 @@ void pass_1::run_pass_1() {
                 } else {
                     LOCCTR += tableStore->OPTAB[utilities::getRealOpcode(opcode)].format;
                     lastDeltaLOCCTR += tableStore->OPTAB[utilities::getRealOpcode(opcode)].format;
-                    utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                    utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                     if (operand[operand.length() - 1] == ',') {
-                        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, tempOperand);
+                        utilities::first_non_whitespace(fileLine, index, statusCode, tempOperand);
                         operand += tempOperand;
                     }
                 }
             } else if (opcode == "WORD") {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                 LOCCTR += 3;
                 lastDeltaLOCCTR += 3;
             } else if (opcode == "RESW") {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                 LOCCTR += 3 * utilities::string_to_decimal(operand);
                 lastDeltaLOCCTR += 3 * utilities::string_to_decimal(operand);
             } else if (opcode == "RESB") {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                 LOCCTR += utilities::string_to_decimal(operand);
                 lastDeltaLOCCTR += utilities::string_to_decimal(operand);
             } else if (opcode == "BYTE") {
@@ -154,17 +164,16 @@ void pass_1::run_pass_1() {
                 //   utilities::writeToFile(errorFile,writeData);
                 // }
             } else if (opcode == "BASE") {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
             } else if (opcode == "LTORG") {
                 operand = " ";
-                handle_LTORG(writeDataSuffix, lineNumberDelta, lineNumber, LOCCTR, lastDeltaLOCCTR,
-                             currentBlockNumber);
+                handle_LTORG(writeDataSuffix);
             } else if (opcode == "ORG") {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
 
                 char lastByte = operand[operand.length() - 1];
                 while (lastByte == '+' || lastByte == '-' || lastByte == '/' || lastByte == '*') {
-                    utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, tempOperand);
+                    utilities::first_non_whitespace(fileLine, index, statusCode, tempOperand);
                     operand += tempOperand;
                     lastByte = operand[operand.length() - 1];
                 }
@@ -175,27 +184,19 @@ void pass_1::run_pass_1() {
                 LOCCTR = tempVariable;
 
                 if (tableStore->SYMTAB[operand].exists == 'y') {
-                    LOCCTR = utilities::stringHexToInt(tableStore->SYMTAB[operand].address);
+                    LOCCTR = utilities::string_hex_to_int(tableStore->SYMTAB[operand].address);
                 } else {
                     bool relative;
                     // set error_flag to false
                     error_flag = false;
-                    evaluateExpression(operand, relative);
+                    eval_expr(operand, relative);
                     if (!error_flag) {
-                        LOCCTR = utilities::stringHexToInt(tempOperand);
+                        LOCCTR = utilities::string_hex_to_int(tempOperand);
                     }
                     error_flag = false; // reset error_flag
                 }
             } else if (opcode == "USE") {
-                // cout<<"Changing block"<<endl;
-                // for(auto const& it: tableStore->BLOCKS){
-                //   cout<<it.second.name<<":"<<it.second.LOCCTR<<endl;
-                // }
-                //
-                // cout<<"Current block number: "<<currentBlockNumber<<l;
-                // cout<<"Current LOCCTR: "<<LOCCTR<<endl;
-
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                 tableStore->BLOCKS[currentBlockName].LOCCTR = utilities::int_to_string_hex(LOCCTR);
 
                 if (tableStore->BLOCKS[operand].exists == 'n') {
@@ -205,20 +206,11 @@ void pass_1::run_pass_1() {
                     tableStore->BLOCKS[operand].number = totalBlocks++;
                     tableStore->BLOCKS[operand].LOCCTR = "0";
                 }
-
-                // cout<<"Changing to: "<<operand<<endl;
-                // for(auto const& it: tableStore->BLOCKS){
-                //   cout<<it.second.name<<":"<<it.second.LOCCTR<<endl;
-                // }
-
                 currentBlockNumber = tableStore->BLOCKS[operand].number;
                 currentBlockName = tableStore->BLOCKS[operand].name;
-                LOCCTR = utilities::stringHexToInt(tableStore->BLOCKS[operand].LOCCTR);
-
-                // cout<<"Current block number: "<<currentBlockNumber<<endl;
-                // cout<<"Current LOCCTR: "<<LOCCTR<<endl;
+                LOCCTR = utilities::string_hex_to_int(tableStore->BLOCKS[operand].LOCCTR);
             } else if (opcode == "EQU") {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                 tempOperand = "";
                 bool relative;
 
@@ -232,27 +224,26 @@ void pass_1::run_pass_1() {
                     char lastByte = operand[operand.length() - 1];
 
                     while (lastByte == '+' || lastByte == '-' || lastByte == '/' || lastByte == '*') {
-                        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, tempOperand);
+                        utilities::first_non_whitespace(fileLine, index, statusCode, tempOperand);
                         operand += tempOperand;
                         lastByte = operand[operand.length() - 1];
                     }
 
-                    // Code for reading whole operand
-                    evaluateExpression(operand, relative);
+                    eval_expr(operand, relative);
                 }
 
                 tableStore->SYMTAB[label].name = label;
                 tableStore->SYMTAB[label].address = tempOperand;
                 tableStore->SYMTAB[label].relative = relative;
                 tableStore->SYMTAB[label].blockNumber = currentBlockNumber;
-                lastDeltaLOCCTR = LOCCTR - utilities::stringHexToInt(tempOperand);
+                lastDeltaLOCCTR = LOCCTR - utilities::string_hex_to_int(tempOperand);
             } else {
-                utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
+                utilities::first_non_whitespace(fileLine, index, statusCode, operand);
                 writeData = "Line: " + to_string(lineNumber) + " : Invalid OPCODE. Found " + opcode;
-                utilities::writeToFile(errorFile, writeData);
+                utilities::write_to_file(errorFile, writeData);
                 error_flag = true;
             }
-            utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
+            utilities::first_non_whitespace(fileLine, index, statusCode, comment, true);
             if (opcode == "EQU" && tableStore->SYMTAB[label].relative == 0) {
                 writeData = writeDataPrefix + to_string(lineNumber) + "\t" +
                            utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" + " " + "\t" +
@@ -268,17 +259,16 @@ void pass_1::run_pass_1() {
         } else {
             writeData = to_string(lineNumber) + "\t" + fileLine;
         }
-        utilities::writeToFile(intermediateFile, writeData);
+        utilities::write_to_file(intermediateFile, writeData);
 
         tableStore->BLOCKS[currentBlockName].LOCCTR = utilities::int_to_string_hex(LOCCTR);
-        // Update LOCCTR of block after every instruction
-        getline(SourceFile, fileLine); // Read next line
+        getline(SourceFile, fileLine);
         lineNumber += 5 + lineNumberDelta;
         lineNumberDelta = 0;
         index = 0;
         lastDeltaLOCCTR = 0;
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, label); // Parse label
-        utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, opcode); // Parse OPCODE
+        utilities::first_non_whitespace(fileLine, index, statusCode, label); // Parse label
+        utilities::first_non_whitespace(fileLine, index, statusCode, opcode); // Parse OPCODE
     }
 
     if (opcode == "END") {
@@ -287,24 +277,22 @@ void pass_1::run_pass_1() {
         tableStore->SYMTAB[firstExecutable_Sec].address = firstExecutable_Sec;
     }
 
-    utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
-    utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
-
-    /*Change to deafult before dumping literals*/
+    utilities::first_non_whitespace(fileLine, index, statusCode, operand);
+    utilities::first_non_whitespace(fileLine, index, statusCode, comment, true);
     currentBlockName = "DEFAULT";
     currentBlockNumber = 0;
-    LOCCTR = utilities::stringHexToInt(tableStore->BLOCKS[currentBlockName].LOCCTR);
+    LOCCTR = utilities::string_hex_to_int(tableStore->BLOCKS[currentBlockName].LOCCTR);
 
-    handle_LTORG(writeDataSuffix, lineNumberDelta, lineNumber, LOCCTR, lastDeltaLOCCTR, currentBlockNumber);
+    handle_LTORG(writeDataSuffix);
 
     writeData = to_string(lineNumber) + "\t" + utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" +
                " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment + writeDataSuffix;
-    utilities::writeToFile(intermediateFile, writeData);
+    utilities::write_to_file(intermediateFile, writeData);
 
     int LocctrArr[totalBlocks];
     BLocksNumToName = new string[totalBlocks];
     for (auto const &it: tableStore->BLOCKS) {
-        LocctrArr[it.second.number] = utilities::stringHexToInt(it.second.LOCCTR);
+        LocctrArr[it.second.number] = utilities::string_hex_to_int(it.second.LOCCTR);
         BLocksNumToName[it.second.number] = it.first;
     }
 
@@ -312,16 +300,16 @@ void pass_1::run_pass_1() {
         LocctrArr[i] += LocctrArr[i - 1];
     }
 
-    for (auto const &it: tableStore->BLOCKS) {
-        if (it.second.startAddress == "?") {
-            tableStore->BLOCKS[it.first].startAddress = utilities::int_to_string_hex(LocctrArr[it.second.number - 1]);
+    for (const auto &[fst, snd]: tableStore->BLOCKS) {
+        if (snd.startAddress == "?") {
+            tableStore->BLOCKS[fst].startAddress = utilities::int_to_string_hex(LocctrArr[snd.number - 1]);
         }
     }
 
     program_length = LocctrArr[totalBlocks - 1] - startAddress;
 }
 
-void pass_1::evaluateExpression(std::string expression, bool &relative
+void pass_1::eval_expr(std::string expression, bool &relative
 ) {
     if (!expression.empty() && expression[0] == '#') {
         string numPart = expression.substr(1);
@@ -346,7 +334,6 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
     string singleOperator = "?";
     string valueString;
     string valueTemp;
-    string writeData;
     int lastOperand = 0, lastOperator = 0, pairCount = 0;
     char lastByte = ' ';
     bool Illegal = false;
@@ -363,13 +350,13 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
         if (tableStore->SYMTAB[singleOperand].exists == 'y') {
             // Check operand existence
             lastOperand = tableStore->SYMTAB[singleOperand].relative;
-            valueTemp = to_string(utilities::stringHexToInt(tableStore->SYMTAB[singleOperand].address));
+            valueTemp = to_string(utilities::string_hex_to_int(tableStore->SYMTAB[singleOperand].address));
         } else if ((!singleOperand.empty() || singleOperand != "?") && utilities::if_all_num(singleOperand)) {
             lastOperand = 0;
             valueTemp = singleOperand;
         } else {
-            writeData = "Line: " + to_string(lineNumber) + " : Can't find symbol. Found " + singleOperand;
-            utilities::writeToFile(errorFile, writeData);
+            writeData = "Line: " + to_string(lineNumber) + " : Cannot find symbol. Found " + singleOperand;
+            utilities::write_to_file(errorFile, writeData);
             Illegal = true;
             break;
         }
@@ -377,7 +364,7 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
         if (lastOperand * lastOperator == 1) {
             // Check expressions legality
             writeData = "Line: " + to_string(lineNumber) + " : Illegal expression";
-            utilities::writeToFile(errorFile, writeData);
+            utilities::write_to_file(errorFile, writeData);
             error_flag = true;
             Illegal = true;
             break;
@@ -400,7 +387,7 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
 
         if (singleOperator.length() > 1) {
             writeData = "Line: " + to_string(lineNumber) + " : Illegal operator in expression. Found " + singleOperator;
-            utilities::writeToFile(errorFile, writeData);
+            utilities::write_to_file(errorFile, writeData);
             error_flag = true;
             Illegal = true;
             break;
@@ -424,12 +411,11 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
         } else if (pairCount == 0) {
             /*absolute*/
             relative = false;
-            // cout << valueString << endl;
             EvaluateString tempOBJ(valueString);
             tempOperand = utilities::int_to_string_hex(tempOBJ.getResult());
         } else {
             writeData = "Line: " + to_string(lineNumber) + " : Illegal expression";
-            utilities::writeToFile(errorFile, writeData);
+            utilities::write_to_file(errorFile, writeData);
             error_flag = true;
             tempOperand = "00000";
             relative = false;
@@ -441,8 +427,7 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
     }
 }
 
-void pass_1::handle_LTORG(std::string &litPrefix, int &lineNumberDelta, int lineNumber, int &LOCCTR,
-                          int &lastDeltaLOCCTR, const int currentBlockNumber) const {
+void pass_1::handle_LTORG(std::string &litPrefix) {
     litPrefix = "";
     for (const auto &[fst, snd]: tableStore->LITTAB) {
         string litAddress = snd.address;
