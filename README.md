@@ -1,5 +1,5 @@
 # SIC-XE Assembler 
-This SIC-XE assembler can handle program blocks, but does not handle control sections.
+This SIC-XE assembler can handle control sections but not program blocks.
 ## To run:
 ```bash
   mkdir -p build
