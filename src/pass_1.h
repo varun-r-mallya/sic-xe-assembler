@@ -2,8 +2,6 @@
 #define SIC_XE_ASSEMBLER_PASS_1_H
 #include <fstream>
 #include <string>
-#include <utility>
-#include <iostream>
 
 #include "table_store.h"
 

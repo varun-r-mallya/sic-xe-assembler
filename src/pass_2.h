@@ -3,8 +3,6 @@
 
 #include <string>
 #include <fstream>
-#include <vector>
-#include <unordered_map>
 #include "table_store.h"
 
 class pass_2 {
