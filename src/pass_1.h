@@ -20,7 +20,8 @@ class pass_1 {
     std::string first_executable_section_;
     std::string file_line_;
     std::string write_data_, write_data_suffix_, write_data_prefix_;
-    int start_address_{}, location_counter{}, save_location_counter{}, line_number_ = 0, last_location_counter = 0, line_number_diff = 0;
+    int start_address_{}, location_counter{}, save_location_counter{}, line_number_ = 0, last_location_counter = 0,
+            line_number_diff = 0;
     int index = 0;
 
     std::string current_block_ = "DEFAULT";
@@ -30,8 +31,8 @@ class pass_1 {
     bool status_code_{};
     std::string label, opcode, operand, comment;
     std::string temp_operand_;
-public:
 
+public:
     auto get_first_executable_sec() -> std::string;
 
     auto get_blocks_num_to_name() const -> std::string *;

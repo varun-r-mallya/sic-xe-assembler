@@ -25,7 +25,7 @@ public:
     static bool if_all_num(const std::string &x);
 
     static void first_non_whitespace(const std::string &line, int &index, bool &status, std::string &data,
-                                       bool readTillEnd = false);
+                                     bool readTillEnd = false);
 
     static void readByteOperand(const std::string &line, int &index, bool &status, std::string &data);
 

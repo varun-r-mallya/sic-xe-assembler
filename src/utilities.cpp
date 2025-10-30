@@ -70,7 +70,7 @@ int utilities::string_hex_to_int(const std::string &x, bool *success) {
         int result = stoul(trimmed, nullptr, 16);
         if (success) *success = true;
         return result;
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         std::cerr << "Error converting '" << x << "' to hex: " << e.what() << std::endl;
         return 0;
     }
@@ -115,7 +115,7 @@ bool utilities::if_all_num(const std::string &x) {
     // Allow leading negative sign
     if (x[0] == '-' || x[0] == '+') {
         if (x.length() == 1) {
-            return false;  // Just a sign, not a number
+            return false; // Just a sign, not a number
         }
         start = 1;
     }
@@ -131,9 +131,9 @@ bool utilities::if_all_num(const std::string &x) {
 }
 
 void utilities::first_non_whitespace(const std::string &line, int &index, bool &status, std::string &data,
-                                       const bool readTillEnd) {
+                                     const bool readTillEnd) {
     data = "";
-    status = false;  // Default to false
+    status = false; // Default to false
 
     // Boundary check
     if (index < 0 || index >= line.length()) {

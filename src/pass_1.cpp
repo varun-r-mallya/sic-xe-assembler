@@ -19,7 +19,7 @@ std::string pass_1::get_first_executable_sec() {
     return first_executable_section_;
 }
 
-std::string * pass_1::get_blocks_num_to_name() const {
+std::string *pass_1::get_blocks_num_to_name() const {
     return blocks_num_to_name_;
 }
 
@@ -28,7 +28,7 @@ int pass_1::get_program_length() const {
 }
 
 pass_1::pass_1(std::string filename, table_store *tables, const std::string &intermediateFileName,
-    const std::string &errorFileName) {
+               const std::string &errorFileName) {
     this->file_name_ = std::move(filename);
     this->table_store_ = tables;
     source_file_.open(file_name_);
@@ -63,8 +63,9 @@ void pass_1::run_pass_1() {
         utilities::first_non_whitespace(file_line_, index, status_code_, comment, true);
         start_address_ = utilities::string_hex_to_int(operand);
         location_counter = start_address_;
-        write_data_ = to_string(line_number_) + "\t" + utilities::int_to_string_hex(location_counter - last_location_counter) + "\t" +
-                   to_string(current_blk_num) + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
+        write_data_ = to_string(line_number_) + "\t" + utilities::int_to_string_hex(
+                          location_counter - last_location_counter) + "\t" +
+                      to_string(current_blk_num) + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
         utilities::write_to_file(intermediate_file_, write_data_);
 
         getline(source_file_, file_line_);
@@ -89,7 +90,7 @@ void pass_1::run_pass_1() {
                     table_store_->SYMTAB[label].blockNumber = current_blk_num;
                 } else {
                     write_data_ = "Line: " + to_string(line_number_) + " : Duplicate symbol for '" + label +
-                                "'. Previously defined at " + table_store_->SYMTAB[label].address;
+                                  "'. Previously defined at " + table_store_->SYMTAB[label].address;
                     utilities::write_to_file(error_file_, write_data_);
                     error_flag = true;
                 }
@@ -116,7 +117,8 @@ void pass_1::run_pass_1() {
                     if (utilities::getFlagFormat(operand) == '=') {
                         temp_operand_ = operand.substr(1, operand.length() - 1);
                         if (temp_operand_ == "*") {
-                            temp_operand_ = "X'" + utilities::int_to_string_hex(location_counter - last_location_counter, 6) + "'";
+                            temp_operand_ = "X'" + utilities::int_to_string_hex(
+                                                location_counter - last_location_counter, 6) + "'";
                         }
                         if (table_store_->LITTAB[temp_operand_].exists == 'n') {
                             table_store_->LITTAB[temp_operand_].value = temp_operand_;
@@ -246,13 +248,14 @@ void pass_1::run_pass_1() {
             utilities::first_non_whitespace(file_line_, index, status_code_, comment, true);
             if (opcode == "EQU" && table_store_->SYMTAB[label].relative == 0) {
                 write_data_ = write_data_prefix_ + to_string(line_number_) + "\t" +
-                           utilities::int_to_string_hex(location_counter - last_location_counter) + "\t" + " " + "\t" +
-                           label + "\t" + opcode + "\t" + operand + "\t" + comment + write_data_suffix_;
+                              utilities::int_to_string_hex(location_counter - last_location_counter) + "\t" + " " + "\t"
+                              +
+                              label + "\t" + opcode + "\t" + operand + "\t" + comment + write_data_suffix_;
             } else {
                 write_data_ = write_data_prefix_ + to_string(line_number_) + "\t" +
-                           utilities::int_to_string_hex(location_counter - last_location_counter) + "\t" +
-                           to_string(current_blk_num) + "\t" + label + "\t" + opcode + "\t" +
-                           operand + "\t" + comment + write_data_suffix_;
+                              utilities::int_to_string_hex(location_counter - last_location_counter) + "\t" +
+                              to_string(current_blk_num) + "\t" + label + "\t" + opcode + "\t" +
+                              operand + "\t" + comment + write_data_suffix_;
             }
             write_data_prefix_ = "";
             write_data_suffix_ = "";
@@ -285,8 +288,9 @@ void pass_1::run_pass_1() {
 
     handle_LTORG(write_data_suffix_);
 
-    write_data_ = to_string(line_number_) + "\t" + utilities::int_to_string_hex(location_counter - last_location_counter) + "\t" +
-               " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment + write_data_suffix_;
+    write_data_ = to_string(line_number_) + "\t" + utilities::int_to_string_hex(
+                      location_counter - last_location_counter) + "\t" +
+                  " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment + write_data_suffix_;
     utilities::write_to_file(intermediate_file_, write_data_);
 
     int LocctrArr[total_blocks_];
@@ -386,7 +390,8 @@ void pass_1::eval_expr(std::string expression, bool &relative
         }
 
         if (singleOperator.length() > 1) {
-            write_data_ = "Line: " + to_string(line_number_) + " : Illegal operator in expression. Found " + singleOperator;
+            write_data_ = "Line: " + to_string(line_number_) + " : Illegal operator in expression. Found " +
+                          singleOperator;
             utilities::write_to_file(error_file_, write_data_);
             error_flag = true;
             Illegal = true;
@@ -441,7 +446,7 @@ void pass_1::handle_LTORG(std::string &litPrefix) {
             table_store_->LITTAB[fst].blockNumber = current_blk_num;
 
             litPrefix += "\n" + to_string(line_number_) + "\t" + utilities::int_to_string_hex(location_counter) + "\t" +
-                        to_string(current_blk_num) + "\t" + "*" + "\t" + "=" + litValue + "\t" + " " + "\t" + " ";
+                    to_string(current_blk_num) + "\t" + "*" + "\t" + "=" + litValue + "\t" + " " + "\t" + " ";
 
             if (litValue[0] == 'X') {
                 location_counter += (static_cast<int>(litValue.length()) - 3) / 2;
