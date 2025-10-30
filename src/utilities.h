@@ -8,11 +8,11 @@ class utilities {
 public:
     static int string_to_decimal(const std::string &str);
 
-    static std::string getString(char c);
+    static std::string get_string(char c);
 
     static std::string int_to_string_hex(int x, int fill = 5);
 
-    static std::string expandString(std::string data, int length, char fillChar, bool back = false);
+    static std::string str_expand(std::string data, int length, char fillChar, bool back = false);
 
     static int string_hex_to_int(const std::string &x, bool *success = nullptr);
 
@@ -36,14 +36,14 @@ public:
     static char getFlagFormat(const std::string &data);
 };
 
-class EvaluateString {
+class StrEval {
 public:
-    int getResult();
+    int get_result();
 
-    explicit EvaluateString(const std::string &data);
+    explicit StrEval(const std::string &data);
 
 private:
-    std::string storedData;
+    std::string stored_data_;
     int index;
 
     [[nodiscard]] char peek() const;

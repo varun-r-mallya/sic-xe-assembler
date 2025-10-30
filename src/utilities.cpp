@@ -14,7 +14,7 @@ int utilities::string_to_decimal(const std::string &str) {
     return value;
 }
 
-std::string utilities::getString(const char c) {
+std::string utilities::get_string(const char c) {
     std::string s(1, c);
     return s;
 }
@@ -28,36 +28,30 @@ std::string utilities::int_to_string_hex(const int x, const int fill) {
     return temp;
 }
 
-std::string utilities::expandString(std::string data, const int length, const char fillChar, const bool back) {
+std::string utilities::str_expand(std::string data, const int length, const char fillChar, const bool back) {
     if (back) {
         if (length <= data.length()) {
             return data.substr(0, length);
         }
-        for (int i = length - data.length(); i > 0; i--) {
+        for (size_t i = length - data.length(); i > 0; i--) {
             data += fillChar;
         }
     } else {
         if (length <= data.length()) {
             return data.substr(data.length() - length, length);
-        } else {
-            for (int i = length - data.length(); i > 0; i--) {
-                data = fillChar + data;
-            }
+        }
+        for (size_t i = length - data.length(); i > 0; i--) {
+            data = fillChar + data;
         }
     }
     return data;
 }
 
 int utilities::string_hex_to_int(const std::string &x, bool *success) {
-    // Set success to false by default if pointer provided
     if (success) *success = false;
-
-    // Handle empty or invalid strings
     if (x.empty() || x == " " || x == "-1") {
         return 0;
     }
-
-    // Trim whitespace
     std::string trimmed = x;
     trimmed.erase(0, trimmed.find_first_not_of(" \t\n\r"));
     trimmed.erase(trimmed.find_last_not_of(" \t\n\r") + 1);
@@ -214,12 +208,12 @@ char utilities::getFlagFormat(const std::string &data) {
     return ' ';
 }
 
-EvaluateString::EvaluateString(const std::string &data) {
-    storedData = data;
+StrEval::StrEval(const std::string &data) {
+    stored_data_ = data;
     index = 0;
 }
 
-int EvaluateString::getResult() {
+int StrEval::get_result() {
     int result = term();
     while (peek() == '+' || peek() == '-') {
         if (get() == '+') {
@@ -231,7 +225,7 @@ int EvaluateString::getResult() {
     return result;
 }
 
-int EvaluateString::term() {
+int StrEval::term() {
     int result = factor();
     while (peek() == '*' || peek() == '/') {
         if (get() == '*') {
@@ -243,13 +237,13 @@ int EvaluateString::term() {
     return result;
 }
 
-int EvaluateString::factor() {
+int StrEval::factor() {
     if (peek() >= '0' && peek() <= '9') {
         return number();
     }
     if (peek() == '(') {
         get();
-        const int result = getResult();
+        const int result = get_result();
         get();
         return result;
     }
@@ -260,7 +254,7 @@ int EvaluateString::factor() {
     return 0;
 }
 
-int EvaluateString::number() {
+int StrEval::number() {
     int result = get() - '0';
     while (peek() >= '0' && peek() <= '9') {
         result = 10 * result + get() - '0';
@@ -268,10 +262,10 @@ int EvaluateString::number() {
     return result;
 }
 
-char EvaluateString::get() {
-    return storedData[index++];
+char StrEval::get() {
+    return stored_data_[index++];
 }
 
-char EvaluateString::peek() const {
-    return storedData[index];
+char StrEval::peek() const {
+    return stored_data_[index];
 }

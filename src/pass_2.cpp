@@ -607,7 +607,7 @@ void pass_2::run_pass_2() {
 
     const int program_section_length = program_length;
 
-    write_data_ = "H^" + utilities::expandString(label, 6, ' ', true) + '^' +
+    write_data_ = "H^" + utilities::str_expand(label, 6, ' ', true) + '^' +
                   utilities::int_to_string_hex(address, 6) + '^' +
                   utilities::int_to_string_hex(program_section_length, 6);
     utilities::write_to_file(object_file_, write_data_);

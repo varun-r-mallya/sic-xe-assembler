@@ -295,9 +295,9 @@ void pass_1::run_pass_1() {
 
     int LocctrArr[total_blocks_];
     blocks_num_to_name_ = new string[total_blocks_];
-    for (auto const &it: table_store_->BLOCKS) {
-        LocctrArr[it.second.number] = utilities::string_hex_to_int(it.second.LOCCTR);
-        blocks_num_to_name_[it.second.number] = it.first;
+    for (const auto &[fst, snd]: table_store_->BLOCKS) {
+        LocctrArr[snd.number] = utilities::string_hex_to_int(snd.LOCCTR);
+        blocks_num_to_name_[snd.number] = fst;
     }
 
     for (int i = 1; i < total_blocks_; i++) {
@@ -342,7 +342,7 @@ void pass_1::eval_expr(std::string expression, bool &relative
     char lastByte = ' ';
     bool Illegal = false;
 
-    for (int i = 0; i < expression.length();) {
+    for (size_t i = 0; i < expression.length();) {
         singleOperand = "";
 
         lastByte = expression[i];
@@ -411,13 +411,13 @@ void pass_1::eval_expr(std::string expression, bool &relative
         if (pairCount == 1) {
             /*relative*/
             relative = true;
-            EvaluateString tempOBJ(valueString);
-            temp_operand_ = utilities::int_to_string_hex(tempOBJ.getResult());
+            StrEval tempOBJ(valueString);
+            temp_operand_ = utilities::int_to_string_hex(tempOBJ.get_result());
         } else if (pairCount == 0) {
             /*absolute*/
             relative = false;
-            EvaluateString tempOBJ(valueString);
-            temp_operand_ = utilities::int_to_string_hex(tempOBJ.getResult());
+            StrEval tempOBJ(valueString);
+            temp_operand_ = utilities::int_to_string_hex(tempOBJ.get_result());
         } else {
             write_data_ = "Line: " + to_string(line_number_) + " : Illegal expression";
             utilities::write_to_file(error_file_, write_data_);
