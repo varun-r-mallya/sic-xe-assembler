@@ -6,6 +6,7 @@
 #include<sstream>
 #include<iomanip>
 #include<algorithm>
+#include<vector>
 
 
 int utilities::string_to_decimal(const std::string &str) {
@@ -263,4 +264,68 @@ char StrEval::get() {
 
 char StrEval::peek() const {
     return stored_data_[index];
+}
+
+void utilities::reformat_assembly_listing(const std::string &input_filename) {
+    // Use the same file name for both input and output
+    std::ifstream infile(input_filename);
+
+    if (!infile.is_open()) {
+        std::cerr << "Error: Cannot open input file " << input_filename << std::endl;
+        return;
+    }
+
+    // Read all lines into memory
+    std::vector<std::string> lines;
+    std::string line;
+    while (std::getline(infile, line)) {
+        lines.push_back(line);
+    }
+    infile.close();
+
+    // Open the same file for output (overwrite)
+    std::ofstream outfile(input_filename);
+
+    if (!outfile.is_open()) {
+        std::cerr << "Error: Cannot open output file " << input_filename << std::endl;
+        return;
+    }
+
+    for (const auto& line : lines) {
+        // Skip empty lines
+        if (line.empty()) {
+            outfile << std::endl;
+            continue;
+        }
+
+        // If there are no tabs, just output the line as-is
+        if (line.find('\t') == std::string::npos) {
+            outfile << line << std::endl;
+            continue;
+        }
+
+        // Process line by tabs
+        size_t start = 0;
+        size_t tab_pos = 0;
+        bool first = true;
+        while ((tab_pos = line.find('\t', start)) != std::string::npos) {
+            std::string field = line.substr(start, tab_pos - start);
+            if (!first) {
+                // If not first field, preserve any leading spaces in field
+                outfile << field;
+            } else {
+                // For first field, just output as is
+                outfile << field;
+                first = false;
+            }
+            outfile << std::setw(20 - field.length()) << ""; // Pad to 20 chars from last tab
+            start = tab_pos + 1;
+        }
+        // Output the last field (after last tab)
+        std::string last_field = line.substr(start);
+        outfile << last_field;
+        outfile << std::endl;
+    }
+
+    outfile.close();
 }

@@ -6,6 +6,7 @@
 #include "pass_1.h"
 #include "pass_2.h"
 #include "table_store.h"
+#include "utilities.h"
 
 void print_help(const char *program_name) {
     std::cout << "Usage: " << program_name << " [OPTIONS] <input_file> <output_file>\n"
@@ -141,5 +142,9 @@ int main(const int argc, char *argv[]) {
         std::filesystem::remove(errorFileName);
         std::filesystem::remove(actual_input_file);
     }
+    // else {
+    //     utilities::reformat_assembly_listing(intermediateFileName);
+    //     utilities::reformat_assembly_listing(listingFileName);
+    // }
     return 0;
 }

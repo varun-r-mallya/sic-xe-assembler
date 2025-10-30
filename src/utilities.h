@@ -32,6 +32,8 @@ public:
     static std::string getRealOpcode(std::string opcode);
 
     static char getFlagFormat(const std::string &data);
+
+    static void reformat_assembly_listing(const std::string &input_filename);
 };
 
 class StrEval {
