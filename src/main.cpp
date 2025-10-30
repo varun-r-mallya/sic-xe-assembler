@@ -81,8 +81,8 @@ int main(const int argc, char *argv[]) {
                 << std::setw(20) << "Block Number"
                 << std::setw(20) << "Exists"
                 << std::setw(20) << "Value" << "\n";
-        for (auto literal_table = tables.LITTAB; const auto &[fst, snd]: literal_table) {
-            blocks_file << std::left << std::setw(10) << fst
+        for (const auto &[fst, snd]: tables.LITTAB) {
+            blocks_file << std::left << std::setw(10) << fst // Also note: should write to blocks_file, not std::cout
                     << std::setw(20) << snd.address
                     << std::setw(20) << snd.blockNumber
                     << std::setw(20) << snd.exists

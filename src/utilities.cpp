@@ -19,7 +19,7 @@ std::string utilities::getString(const char c) {
     return s;
 }
 
-std::string utilities::intToStringHex(const int x, const int fill) {
+std::string utilities::int_to_string_hex(const int x, const int fill) {
     std::stringstream s;
     s << std::setfill('0') << std::setw(fill) << std::hex << x;
     std::string temp = s.str();

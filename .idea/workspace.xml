@@ -30,10 +30,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="add editor files">
+    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="class-ify pass1 and pass2">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pass_1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_1.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pass_2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pass_2.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fig2.11.sic" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fig2.11.sic" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,42 +64,15 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/main.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/pass_1.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pass_1.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/pass_2.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/pass_2.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/pass_2.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pass_2.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/table_store.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/utilities.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/xeon/clonedrepos/sic-xe-assembler/src/utilities.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/utilities.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
@@ -143,7 +120,7 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.assembler">
-    <configuration name="assembler" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-i test.sic" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="sic-xe-assembler" TARGET_NAME="assembler" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="sic-xe-assembler" RUN_TARGET_NAME="assembler">
+    <configuration name="assembler" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-i fig2.11.sic" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="sic-xe-assembler" TARGET_NAME="assembler" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="sic-xe-assembler" RUN_TARGET_NAME="assembler">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -175,6 +152,8 @@
       <workItem from="1761529930565" duration="3408000" />
       <workItem from="1761541417309" duration="11000" />
       <workItem from="1761715307491" duration="3238000" />
+      <workItem from="1761742125382" duration="4051000" />
+      <workItem from="1761802249143" duration="1114000" />
     </task>
     <task id="LOCAL-00001" summary="infinite loop error">
       <option name="closed" value="true" />
@@ -200,7 +179,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761353385076</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="class-ify pass1 and pass2">
+      <option name="closed" value="true" />
+      <created>1761742187216</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1761742187216</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,6 +213,18 @@
     <MESSAGE value="infinite loop error" />
     <MESSAGE value="remove infinite loop error due to formatting issue" />
     <MESSAGE value="add editor files" />
-    <option name="LAST_COMMIT_MESSAGE" value="add editor files" />
+    <MESSAGE value="class-ify pass1 and pass2" />
+    <option name="LAST_COMMIT_MESSAGE" value="class-ify pass1 and pass2" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/pass_1.cpp</url>
+          <line>443</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

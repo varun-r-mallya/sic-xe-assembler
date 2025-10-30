@@ -32,7 +32,7 @@ bool pass_1::get_error() const {
 }
 
 void pass_1::run_pass_1() {
-    // utilities::writeToFile(errorFile, "**********PASS1************");
+    utilities::writeToFile(errorFile, "**********PASS1************");
     utilities::writeToFile(intermediateFile, "Line\tAddress\tBlock\tLabel\tOPCODE\tOPERAND\tComment");
 
     getline(SourceFile, fileLine);
@@ -53,7 +53,7 @@ void pass_1::run_pass_1() {
         utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
         startAddress = utilities::stringHexToInt(operand);
         LOCCTR = startAddress;
-        writeData = to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
+        writeData = to_string(lineNumber) + "\t" + utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" +
                    to_string(currentBlockNumber) + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment;
         utilities::writeToFile(intermediateFile, writeData);
 
@@ -73,7 +73,7 @@ void pass_1::run_pass_1() {
                 // Label found
                 if (tableStore->SYMTAB[label].exists == 'n') {
                     tableStore->SYMTAB[label].name = label;
-                    tableStore->SYMTAB[label].address = utilities::intToStringHex(LOCCTR);
+                    tableStore->SYMTAB[label].address = utilities::int_to_string_hex(LOCCTR);
                     tableStore->SYMTAB[label].relative = 1;
                     tableStore->SYMTAB[label].exists = 'y';
                     tableStore->SYMTAB[label].blockNumber = currentBlockNumber;
@@ -106,7 +106,7 @@ void pass_1::run_pass_1() {
                     if (utilities::getFlagFormat(operand) == '=') {
                         tempOperand = operand.substr(1, operand.length() - 1);
                         if (tempOperand == "*") {
-                            tempOperand = "X'" + utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR, 6) + "'";
+                            tempOperand = "X'" + utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR, 6) + "'";
                         }
                         if (tableStore->LITTAB[tempOperand].exists == 'n') {
                             tableStore->LITTAB[tempOperand].value = tempOperand;
@@ -196,7 +196,7 @@ void pass_1::run_pass_1() {
                 // cout<<"Current LOCCTR: "<<LOCCTR<<endl;
 
                 utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, operand);
-                tableStore->BLOCKS[currentBlockName].LOCCTR = utilities::intToStringHex(LOCCTR);
+                tableStore->BLOCKS[currentBlockName].LOCCTR = utilities::int_to_string_hex(LOCCTR);
 
                 if (tableStore->BLOCKS[operand].exists == 'n') {
                     // cout<<"Creating block: "<<operand<<endl;
@@ -223,10 +223,10 @@ void pass_1::run_pass_1() {
                 bool relative;
 
                 if (operand == "*") {
-                    tempOperand = utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR, 6);
+                    tempOperand = utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR, 6);
                     relative = true;
                 } else if (utilities::if_all_num(operand)) {
-                    tempOperand = utilities::intToStringHex(utilities::string_to_decimal(operand), 6);
+                    tempOperand = utilities::int_to_string_hex(utilities::string_to_decimal(operand), 6);
                     relative = false;
                 } else {
                     char lastByte = operand[operand.length() - 1];
@@ -255,11 +255,11 @@ void pass_1::run_pass_1() {
             utilities::readFirstNonWhiteSpace(fileLine, index, statusCode, comment, true);
             if (opcode == "EQU" && tableStore->SYMTAB[label].relative == 0) {
                 writeData = writeDataPrefix + to_string(lineNumber) + "\t" +
-                           utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" + " " + "\t" +
+                           utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" + " " + "\t" +
                            label + "\t" + opcode + "\t" + operand + "\t" + comment + writeDataSuffix;
             } else {
                 writeData = writeDataPrefix + to_string(lineNumber) + "\t" +
-                           utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
+                           utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" +
                            to_string(currentBlockNumber) + "\t" + label + "\t" + opcode + "\t" +
                            operand + "\t" + comment + writeDataSuffix;
             }
@@ -270,7 +270,7 @@ void pass_1::run_pass_1() {
         }
         utilities::writeToFile(intermediateFile, writeData);
 
-        tableStore->BLOCKS[currentBlockName].LOCCTR = utilities::intToStringHex(LOCCTR);
+        tableStore->BLOCKS[currentBlockName].LOCCTR = utilities::int_to_string_hex(LOCCTR);
         // Update LOCCTR of block after every instruction
         getline(SourceFile, fileLine); // Read next line
         lineNumber += 5 + lineNumberDelta;
@@ -297,7 +297,7 @@ void pass_1::run_pass_1() {
 
     handle_LTORG(writeDataSuffix, lineNumberDelta, lineNumber, LOCCTR, lastDeltaLOCCTR, currentBlockNumber);
 
-    writeData = to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR - lastDeltaLOCCTR) + "\t" +
+    writeData = to_string(lineNumber) + "\t" + utilities::int_to_string_hex(LOCCTR - lastDeltaLOCCTR) + "\t" +
                " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + comment + writeDataSuffix;
     utilities::writeToFile(intermediateFile, writeData);
 
@@ -314,7 +314,7 @@ void pass_1::run_pass_1() {
 
     for (auto const &it: tableStore->BLOCKS) {
         if (it.second.startAddress == "?") {
-            tableStore->BLOCKS[it.first].startAddress = utilities::intToStringHex(LocctrArr[it.second.number - 1]);
+            tableStore->BLOCKS[it.first].startAddress = utilities::int_to_string_hex(LocctrArr[it.second.number - 1]);
         }
     }
 
@@ -327,7 +327,7 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
         string numPart = expression.substr(1);
         if (utilities::if_all_num(numPart)) {
             // It's an immediate numeric value, not a symbol
-            tempOperand = utilities::intToStringHex(utilities::string_to_decimal(numPart), 6);
+            tempOperand = utilities::int_to_string_hex(utilities::string_to_decimal(numPart), 6);
             relative = false;
             return;
         }
@@ -337,7 +337,7 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
 
     // Handle pure numeric values
     if (utilities::if_all_num(expression)) {
-        tempOperand = utilities::intToStringHex(utilities::string_to_decimal(expression), 6);
+        tempOperand = utilities::int_to_string_hex(utilities::string_to_decimal(expression), 6);
         relative = false;
         return;
     }
@@ -420,13 +420,13 @@ void pass_1::evaluateExpression(std::string expression, bool &relative
             /*relative*/
             relative = true;
             EvaluateString tempOBJ(valueString);
-            tempOperand = utilities::intToStringHex(tempOBJ.getResult());
+            tempOperand = utilities::int_to_string_hex(tempOBJ.getResult());
         } else if (pairCount == 0) {
             /*absolute*/
             relative = false;
             // cout << valueString << endl;
             EvaluateString tempOBJ(valueString);
-            tempOperand = utilities::intToStringHex(tempOBJ.getResult());
+            tempOperand = utilities::int_to_string_hex(tempOBJ.getResult());
         } else {
             writeData = "Line: " + to_string(lineNumber) + " : Illegal expression";
             utilities::writeToFile(errorFile, writeData);
@@ -452,10 +452,10 @@ void pass_1::handle_LTORG(std::string &litPrefix, int &lineNumberDelta, int line
         } else {
             lineNumber += 5;
             lineNumberDelta += 5;
-            tableStore->LITTAB[fst].address = utilities::intToStringHex(LOCCTR);
+            tableStore->LITTAB[fst].address = utilities::int_to_string_hex(LOCCTR);
             tableStore->LITTAB[fst].blockNumber = currentBlockNumber;
 
-            litPrefix += "\n" + to_string(lineNumber) + "\t" + utilities::intToStringHex(LOCCTR) + "\t" +
+            litPrefix += "\n" + to_string(lineNumber) + "\t" + utilities::int_to_string_hex(LOCCTR) + "\t" +
                         to_string(currentBlockNumber) + "\t" + "*" + "\t" + "=" + litValue + "\t" + " " + "\t" + " ";
 
             if (litValue[0] == 'X') {

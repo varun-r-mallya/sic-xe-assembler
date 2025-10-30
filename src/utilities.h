@@ -10,7 +10,7 @@ public:
 
     static std::string getString(char c);
 
-    static std::string intToStringHex(int x, int fill = 5);
+    static std::string int_to_string_hex(int x, int fill = 5);
 
     static std::string expandString(std::string data, int length, char fillChar, bool back = false);
 

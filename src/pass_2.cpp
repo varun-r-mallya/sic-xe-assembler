@@ -62,7 +62,7 @@ void pass_2::writeTextRecord(const bool lastRecord) {
     if (lastRecord) {
         if (currentRecord.length() > 0) {
             // Write last text record
-            writeData = utilities::intToStringHex(currentRecord.length() / 2, 2) + '^' + currentRecord;
+            writeData = utilities::int_to_string_hex(currentRecord.length() / 2, 2) + '^' + currentRecord;
             utilities::writeToFile(objectFile, writeData);
             currentRecord = "";
         }
@@ -70,7 +70,7 @@ void pass_2::writeTextRecord(const bool lastRecord) {
     }
     if (objectCode != "") {
         if (currentRecord.length() == 0) {
-            writeData = "T^" + utilities::intToStringHex(
+            writeData = "T^" + utilities::int_to_string_hex(
                             address + utilities::stringHexToInt(
                                 tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
             utilities::writeToFile(objectFile, writeData, false);
@@ -78,12 +78,12 @@ void pass_2::writeTextRecord(const bool lastRecord) {
         // What is objectCode length > 60
         if ((currentRecord + objectCode).length() > 60) {
             // Write current record
-            writeData = utilities::intToStringHex(currentRecord.length() / 2, 2) + '^' + currentRecord;
+            writeData = utilities::int_to_string_hex(currentRecord.length() / 2, 2) + '^' + currentRecord;
             utilities::writeToFile(objectFile, writeData);
 
             // Initialize new text currentRecord
             currentRecord = "";
-            writeData = "T^" + utilities::intToStringHex(
+            writeData = "T^" + utilities::int_to_string_hex(
                             address + utilities::stringHexToInt(
                                 tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
             utilities::writeToFile(objectFile, writeData, false);
@@ -98,7 +98,7 @@ void pass_2::writeTextRecord(const bool lastRecord) {
         } else {
             // Write current record if exists
             if (currentRecord.length() > 0) {
-                writeData = utilities::intToStringHex(currentRecord.length() / 2, 2) + '^' + currentRecord;
+                writeData = utilities::int_to_string_hex(currentRecord.length() / 2, 2) + '^' + currentRecord;
                 utilities::writeToFile(objectFile, writeData);
             }
             currentRecord = "";
@@ -119,7 +119,7 @@ std::string pass_2::createObjectCodeFormat34() {
                         " Index based addressing not supported with Indirect addressing";
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
             return objcode;
@@ -141,14 +141,14 @@ std::string pass_2::createObjectCodeFormat34() {
                 writeData = "Line: " + std::to_string(lineNumber) + " Immediate value exceeds format limit";
                 utilities::writeToFile(errorFile, writeData);
                 hasError = true;
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
                 objcode += (halfBytes == 5) ? "100000" : "0000";
             } else {
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
                 objcode += (halfBytes == 5) ? '1' : '0';
-                objcode += utilities::intToStringHex(immediateValue, halfBytes);
+                objcode += utilities::int_to_string_hex(immediateValue, halfBytes);
             }
             return objcode;
         }
@@ -157,7 +157,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData += " : Symbol does not exist. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
             return objcode;
@@ -170,13 +170,13 @@ std::string pass_2::createObjectCodeFormat34() {
         /*Process Immediate symbol value*/
         if (halfBytes == 5) {
             /*If format 4*/
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += '1';
-            objcode += utilities::intToStringHex(operandAddress, halfBytes);
+            objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
 
             /*add modifacation record here*/
-            modificationRecord += "M^" + utilities::intToStringHex(address + 1, 6) + '^';
+            modificationRecord += "M^" + utilities::int_to_string_hex(address + 1, 6) + '^';
             modificationRecord += (halfBytes == 5) ? "05" : "03";
             modificationRecord += '\n';
 
@@ -191,10 +191,10 @@ std::string pass_2::createObjectCodeFormat34() {
 
         /*Try PC based*/
         if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += '2';
-            objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+            objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
             return objcode;
         }
 
@@ -202,23 +202,23 @@ std::string pass_2::createObjectCodeFormat34() {
         if (!nobase) {
             relativeAddress = operandAddress - base_register_value;
             if (relativeAddress >= 0 && relativeAddress <= 4095) {
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
                 objcode += '4';
-                objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+                objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
                 return objcode;
             }
         }
 
         /*Use direct addressing with no PC or base*/
         if (operandAddress <= 4095) {
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 1, 2);
             objcode += '0';
-            objcode += utilities::intToStringHex(operandAddress, halfBytes);
+            objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
 
             /*add modifacation record here*/
-            modificationRecord += "M^" + utilities::intToStringHex(
+            modificationRecord += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::stringHexToInt(
                     tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
             modificationRecord += (halfBytes == 5) ? "05" : "03";
@@ -235,7 +235,7 @@ std::string pass_2::createObjectCodeFormat34() {
                     " : Symbol doesn't exists.Index based addressing not supported with Indirect addressing ";
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
             objcode += (halfBytes == 5) ? "100000" : "0000";
             return objcode;
@@ -251,32 +251,32 @@ std::string pass_2::createObjectCodeFormat34() {
         if (halfBytes == 3) {
             int relativeAddress = operandAddress - program_counter;
             if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
                 objcode += '2';
-                objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+                objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
                 return objcode;
             }
 
             if (!nobase) {
                 relativeAddress = operandAddress - base_register_value;
                 if (relativeAddress >= 0 && relativeAddress <= 4095) {
-                    objcode = utilities::intToStringHex(
+                    objcode = utilities::int_to_string_hex(
                         utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
                     objcode += '4';
-                    objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+                    objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
                     return objcode;
                 }
             }
 
             if (operandAddress <= 4095) {
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
                 objcode += '0';
-                objcode += utilities::intToStringHex(operandAddress, halfBytes);
+                objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
 
                 /*add modifacation record here*/
-                modificationRecord += "M^" + utilities::intToStringHex(
+                modificationRecord += "M^" + utilities::int_to_string_hex(
                     address + 1 + utilities::stringHexToInt(
                         tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
                 modificationRecord += (halfBytes == 5) ? "05" : "03";
@@ -286,13 +286,13 @@ std::string pass_2::createObjectCodeFormat34() {
             }
         } else {
             // No base or pc based addressing in format 4
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
             objcode += '1';
-            objcode += utilities::intToStringHex(operandAddress, halfBytes);
+            objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
 
             /*add modifacation record here*/
-            modificationRecord += "M^" + utilities::intToStringHex(
+            modificationRecord += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::stringHexToInt(tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress),
                 6) + '^';
             modificationRecord += (halfBytes == 5) ? "05" : "03";
@@ -305,7 +305,7 @@ std::string pass_2::createObjectCodeFormat34() {
         writeData += "Can't fit into program counter based or base register based addressing.";
         utilities::writeToFile(errorFile, writeData);
         hasError = true;
-        objcode = utilities::intToStringHex(
+        objcode = utilities::int_to_string_hex(
             utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 2, 2);
         objcode += (halfBytes == 5) ? "100000" : "0000";
 
@@ -315,13 +315,13 @@ std::string pass_2::createObjectCodeFormat34() {
         std::string tempOperand = operand.substr(1, operand.length() - 1);
 
         if (tempOperand == "*") {
-            tempOperand = "X'" + utilities::intToStringHex(address, 6) + "'";
+            tempOperand = "X'" + utilities::int_to_string_hex(address, 6) + "'";
             /*Add modification record for value created by operand `*` */
-            modificationRecord += "M^" + utilities::intToStringHex(
+            modificationRecord += "M^" + utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->LITTAB[tempOperand].address) + utilities::stringHexToInt(
                     tableStore->BLOCKS[BLocksNumToName[tableStore->LITTAB[tempOperand].blockNumber]].startAddress),
                 6) + '^';
-            modificationRecord += utilities::intToStringHex(6, 2);
+            modificationRecord += utilities::int_to_string_hex(6, 2);
             modificationRecord += '\n';
         }
 
@@ -329,7 +329,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData = "Line " + std::to_string(lineNumber) + " : Symbol doesn't exists. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             objcode += (halfBytes == 5) ? "000" : "0";
             objcode += "000";
@@ -347,32 +347,32 @@ std::string pass_2::createObjectCodeFormat34() {
         if (halfBytes == 3) {
             int relativeAddress = operandAddress - program_counter;
             if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
                 objcode += '2';
-                objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+                objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
                 return objcode;
             }
 
             if (!nobase) {
                 relativeAddress = operandAddress - base_register_value;
                 if (relativeAddress >= 0 && relativeAddress <= 4095) {
-                    objcode = utilities::intToStringHex(
+                    objcode = utilities::int_to_string_hex(
                         utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
                     objcode += '4';
-                    objcode += utilities::intToStringHex(relativeAddress, halfBytes);
+                    objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
                     return objcode;
                 }
             }
 
             if (operandAddress <= 4095) {
-                objcode = utilities::intToStringHex(
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
                 objcode += '0';
-                objcode += utilities::intToStringHex(operandAddress, halfBytes);
+                objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
 
                 /*add modifacation record here*/
-                modificationRecord += "M^" + utilities::intToStringHex(
+                modificationRecord += "M^" + utilities::int_to_string_hex(
                     address + 1 + utilities::stringHexToInt(
                         tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
                 modificationRecord += (halfBytes == 5) ? "05" : "03";
@@ -382,13 +382,13 @@ std::string pass_2::createObjectCodeFormat34() {
             }
         } else {
             // No base or pc based addressing in format 4
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             objcode += '1';
-            objcode += utilities::intToStringHex(operandAddress, halfBytes);
+            objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
 
             /*add modifacation record here*/
-            modificationRecord += "M^" + utilities::intToStringHex(
+            modificationRecord += "M^" + utilities::int_to_string_hex(
                 address + 1 + utilities::stringHexToInt(tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress),
                 6) + '^';
             modificationRecord += (halfBytes == 5) ? "05" : "03";
@@ -401,7 +401,7 @@ std::string pass_2::createObjectCodeFormat34() {
         writeData += "Can't fit into program counter based or base register based addressing.";
         utilities::writeToFile(errorFile, writeData);
         hasError = true;
-        objcode = utilities::intToStringHex(
+        objcode = utilities::int_to_string_hex(
             utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
         objcode += (halfBytes == 5) ? "100" : "0";
         objcode += "000";
@@ -429,7 +429,7 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData += " : Invalid operand. Found '" + operand + "'";
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             objcode += "0000";
             return objcode;
@@ -440,72 +440,57 @@ std::string pass_2::createObjectCodeFormat34() {
             writeData += " : Symbol doesn't exists. Found " + tempOperand;
             utilities::writeToFile(errorFile, writeData);
             hasError = true;
-            objcode = utilities::intToStringHex(
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
             if (halfBytes == 5)
-                objcode += utilities::intToStringHex(xbpe + 1, 1) + "00";
+                objcode += utilities::int_to_string_hex(xbpe + 1, 1) + "00";
             else
-                objcode += utilities::intToStringHex(xbpe, 1);
+                objcode += utilities::int_to_string_hex(xbpe, 1);
             objcode += "000";
             return objcode;
-        } else {
-            int operandAddress = utilities::stringHexToInt(tableStore->SYMTAB[tempOperand].address) +
-                                 utilities::stringHexToInt(
-                                     tableStore->BLOCKS[BLocksNumToName[tableStore->SYMTAB[tempOperand].blockNumber]].
-                                     startAddress);
-            program_counter = address + utilities::stringHexToInt(
-                                  tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress);
-            if (halfBytes == 5)
-                program_counter += 4;
-            else
-                program_counter += 3;
+        }
+        int operandAddress = utilities::stringHexToInt(tableStore->SYMTAB[tempOperand].address) +
+                             utilities::stringHexToInt(
+                                 tableStore->BLOCKS[BLocksNumToName[tableStore->SYMTAB[tempOperand].blockNumber]].
+                                 startAddress);
+        program_counter = address + utilities::stringHexToInt(
+                              tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress);
+        if (halfBytes == 5)
+            program_counter += 4;
+        else
+            program_counter += 3;
 
-            if (halfBytes == 3) {
-                int relativeAddress = operandAddress - program_counter;
-                if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
-                    objcode = utilities::intToStringHex(
-                        utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
-                    objcode += utilities::intToStringHex(xbpe + 2, 1);
-                    objcode += utilities::intToStringHex(relativeAddress, halfBytes);
-                    return objcode;
-                }
-
-                if (!nobase) {
-                    relativeAddress = operandAddress - base_register_value;
-                    if (relativeAddress >= 0 && relativeAddress <= 4095) {
-                        objcode = utilities::intToStringHex(
-                            utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3,
-                            2);
-                        objcode += utilities::intToStringHex(xbpe + 4, 1);
-                        objcode += utilities::intToStringHex(relativeAddress, halfBytes);
-                        return objcode;
-                    }
-                }
-
-                if (operandAddress <= 4095) {
-                    objcode = utilities::intToStringHex(
-                        utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
-                    objcode += utilities::intToStringHex(xbpe, 1);
-                    objcode += utilities::intToStringHex(operandAddress, halfBytes);
-
-                    /*add modifacation record here*/
-                    modificationRecord += "M^" + utilities::intToStringHex(
-                        address + 1 + utilities::stringHexToInt(
-                            tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
-                    modificationRecord += (halfBytes == 5) ? "05" : "03";
-                    modificationRecord += '\n';
-
-                    return objcode;
-                }
-            } else {
-                // No base or pc based addressing in format 4
-                objcode = utilities::intToStringHex(
+        // std::cout << halfBytes << std::endl;
+        if (halfBytes == 3) {
+            int relativeAddress = operandAddress - program_counter;
+            if (relativeAddress >= (-2048) && relativeAddress <= 2047) {
+                objcode = utilities::int_to_string_hex(
                     utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
-                objcode += utilities::intToStringHex(xbpe + 1, 1);
-                objcode += utilities::intToStringHex(operandAddress, halfBytes);
+                objcode += utilities::int_to_string_hex(xbpe + 2, 1);
+                objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
+                return objcode;
+            }
 
-                /*add modifacation record here*/
-                modificationRecord += "M^" + utilities::intToStringHex(
+            if (!nobase) {
+                relativeAddress = operandAddress - base_register_value;
+                if (relativeAddress >= 0 && relativeAddress <= 4095) {
+                    objcode = utilities::int_to_string_hex(
+                        utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3,
+                        2);
+                    objcode += utilities::int_to_string_hex(xbpe + 4, 1);
+                    objcode += utilities::int_to_string_hex(relativeAddress, halfBytes);
+                    return objcode;
+                }
+            }
+
+            if (operandAddress <= 4095) {
+                objcode = utilities::int_to_string_hex(
+                    utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
+                objcode += utilities::int_to_string_hex(xbpe, 1);
+                objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
+
+                /*add modification record here*/
+                modificationRecord += "M^" + utilities::int_to_string_hex(
                     address + 1 + utilities::stringHexToInt(
                         tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
                 modificationRecord += (halfBytes == 5) ? "05" : "03";
@@ -513,20 +498,35 @@ std::string pass_2::createObjectCodeFormat34() {
 
                 return objcode;
             }
-
-            writeData = "Line: " + std::to_string(lineNumber);
-            writeData += "Can't fit into program counter based or base register based addressing.";
-            utilities::writeToFile(errorFile, writeData);
-            hasError = true;
-            objcode = utilities::intToStringHex(
+        } else {
+            // No base or pc based addressing in format 4
+            objcode = utilities::int_to_string_hex(
                 utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
-            objcode += (halfBytes == 5)
-                           ? (utilities::intToStringHex(xbpe + 1, 1) + "00")
-                           : utilities::intToStringHex(xbpe, 1);
-            objcode += "000";
+            objcode += utilities::int_to_string_hex(xbpe + 1, 1);
+            objcode += utilities::int_to_string_hex(operandAddress, halfBytes);
+
+            /*add modifacation record here*/
+            modificationRecord += "M^" + utilities::int_to_string_hex(
+                address + 1 + utilities::stringHexToInt(
+                    tableStore->BLOCKS[BLocksNumToName[blockNumber]].startAddress), 6) + '^';
+            modificationRecord += (halfBytes == 5) ? "05" : "03";
+            modificationRecord += '\n';
 
             return objcode;
         }
+
+        writeData = "Line: " + std::to_string(lineNumber);
+        writeData += "Cannot fit into program counter based or base register based addressing.";
+        utilities::writeToFile(errorFile, writeData);
+        hasError = true;
+        objcode = utilities::int_to_string_hex(
+            utilities::stringHexToInt(tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode) + 3, 2);
+        objcode += (halfBytes == 5)
+                       ? (utilities::int_to_string_hex(xbpe + 1, 1) + "00")
+                       : utilities::int_to_string_hex(xbpe, 1);
+        objcode += "000";
+
+        return objcode;
     }
     return "";
 }
@@ -542,13 +542,13 @@ void pass_2::writeEndRecord(const bool write) {
     }
     if (operand.empty() || operand == " ") {
         // If no operand of END
-        endRecord = "E^" + utilities::intToStringHex(startAddress, 6);
+        endRecord = "E^" + utilities::int_to_string_hex(startAddress, 6);
     } else {
         // Make operand on end firstExecutableAddress
 
         const int firstExecutableAddress = utilities::stringHexToInt(tableStore->SYMTAB[firstExecutable_Sec].address);
 
-        endRecord = "E^" + utilities::intToStringHex(firstExecutableAddress, 6) + "\n";
+        endRecord = "E^" + utilities::int_to_string_hex(firstExecutableAddress, 6) + "\n";
     }
 }
 
@@ -593,7 +593,7 @@ void pass_2::run_pass_2() {
     std::getline(intermediateFile, tempBuffer); // Discard heading line
 
     utilities::writeToFile(listingFile, "Line\tAddress\tLabel\tOPCODE\tOPERAND\tObjectCode\tComment");
-    // utilities::writeToFile(errorFile, "\n\n************PASS2************");
+    utilities::writeToFile(errorFile, "\n\n************PASS2************");
 
     readIntermediateFile();
     while (isComment) {
@@ -605,7 +605,7 @@ void pass_2::run_pass_2() {
 
     if (opcode == "START") {
         startAddress = address;
-        writeData = std::to_string(lineNumber) + "\t" + utilities::intToStringHex(address) + "\t" +
+        writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) + "\t" +
                     std::to_string(blockNumber) + "\t" + label + "\t" + opcode + "\t" + operand +
                     "\t" + objectCode + "\t" + comment;
         utilities::writeToFile(listingFile, writeData);
@@ -623,8 +623,8 @@ void pass_2::run_pass_2() {
     }
 
     writeData = "H^" + utilities::expandString(label, 6, ' ', true) + '^' +
-                utilities::intToStringHex(address, 6) + '^' +
-                utilities::intToStringHex(program_section_length, 6);
+                utilities::int_to_string_hex(address, 6) + '^' +
+                utilities::int_to_string_hex(program_section_length, 6);
     utilities::writeToFile(objectFile, writeData);
 
     readIntermediateFile();
@@ -642,7 +642,7 @@ void pass_2::run_pass_2() {
                         // If not two operand i.e. a
                         if (utilities::getRealOpcode(opcode) == "SVC") {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
-                                         utilities::intToStringHex(utilities::string_to_decimal(operand1), 1) + '0';
+                                         utilities::int_to_string_hex(utilities::string_to_decimal(operand1), 1) + '0';
                         } else if (tableStore->REGTAB[operand1].exists == 'y') {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          tableStore->REGTAB[operand1].num + '0';
@@ -663,7 +663,7 @@ void pass_2::run_pass_2() {
                                    "SHIFTL") {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode +
                                          tableStore->REGTAB[operand1].num +
-                                         utilities::intToStringHex(utilities::string_to_decimal(operand2), 1);
+                                         utilities::int_to_string_hex(utilities::string_to_decimal(operand2), 1);
                         } else if (tableStore->REGTAB[operand2].exists == 'n') {
                             objectCode = tableStore->OPTAB[utilities::getRealOpcode(opcode)].opcode + "00";
                             writeData = "Line: " + std::to_string(lineNumber) + " Invalid Register name";
@@ -695,7 +695,7 @@ void pass_2::run_pass_2() {
                     objectCode = opcode.substr(3, opcode.length() - 4);
                 }
             } else if (opcode == "WORD") {
-                objectCode = utilities::intToStringHex(utilities::string_to_decimal(operand), 6);
+                objectCode = utilities::int_to_string_hex(utilities::string_to_decimal(operand), 6);
             } else if (opcode == "BASE") {
                 if (tableStore->SYMTAB[operand].exists == 'y') {
                     base_register_value = utilities::stringHexToInt(tableStore->SYMTAB[operand].address) +
@@ -726,14 +726,14 @@ void pass_2::run_pass_2() {
             writeTextRecord();
 
             if (blockNumber == -1 && address != -1) {
-                writeData = std::to_string(lineNumber) + "\t" + utilities::intToStringHex(address) +
+                writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
                             "\t" + " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" +
                             objectCode + "\t" + comment;
             } else if (address == -1) {
                 writeData = std::to_string(lineNumber) + "\t" + " " + "\t" + " " + "\t" + label +
                             "\t" + opcode + "\t" + operand + "\t" + objectCode + "\t" + comment;
             } else {
-                writeData = std::to_string(lineNumber) + "\t" + utilities::intToStringHex(address) +
+                writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
                             "\t" + std::to_string(blockNumber) + "\t" + label + "\t" + opcode + "\t" +
                             operand + "\t" + objectCode + "\t" + comment;
             }
@@ -750,7 +750,7 @@ void pass_2::run_pass_2() {
     writeEndRecord(false);
 
     if (!isComment) {
-        writeData = std::to_string(lineNumber) + "\t" + utilities::intToStringHex(address) +
+        writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
                     "\t" + " " + "\t" + label + "\t" + opcode + "\t" + operand + "\t" + "" +
                     "\t" + comment;
     } else {
@@ -767,7 +767,7 @@ void pass_2::run_pass_2() {
             }
             writeTextRecord();
         }
-        writeData = std::to_string(lineNumber) + "\t" + utilities::intToStringHex(address) +
+        writeData = std::to_string(lineNumber) + "\t" + utilities::int_to_string_hex(address) +
                     "\t" + std::to_string(blockNumber) + label + "\t" + opcode + "\t" + operand +
                     "\t" + objectCode + "\t" + comment;
         utilities::writeToFile(listingFile, writeData);

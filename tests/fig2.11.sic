@@ -12,11 +12,14 @@ ENDFIL  LDA     =C'EOF'
         STA     LENGTH
         JSUB    WRREC
         J       @RETADR
+        USE     CDATA
 RETADR  RESW    1
 LENGTH  RESW    1
+        USE     CBLKS
 BUFFER  RESB    4096
 BUFEND  EQU     *
 MAXLEN  EQU     BUFEND-BUFFER
+        USE     DEFAULT
 RDREC   CLEAR   X
         CLEAR   A
         CLEAR   S
@@ -31,7 +34,9 @@ RLOOP   TD      INPUT
         JLT     RLOOP
 EXIT    STX     LENGTH
         RSUB
+        USE     CDATA
 INPUT   BYTE    X'F1'
+        USE     DEFAULT
 WRREC   CLEAR   X
         LDT     LENGTH
 WLOOP   TD      =X'05'
@@ -41,4 +46,6 @@ WLOOP   TD      =X'05'
         TIXR    T
         JLT     WLOOP
         RSUB
+        USE     CDATA
+        LTORG
         END     FIRST
