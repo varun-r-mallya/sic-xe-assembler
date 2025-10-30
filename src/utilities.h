@@ -8,8 +8,6 @@ class utilities {
 public:
     static int string_to_decimal(const std::string &str);
 
-    static std::string get_string(char c);
-
     static std::string int_to_string_hex(int x, int fill = 5);
 
     static std::string str_expand(std::string data, int length, char fillChar, bool back = false);

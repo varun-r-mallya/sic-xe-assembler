@@ -4,13 +4,12 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <unordered_map>
 #include "table_store.h"
 
 std::string pass_2::readTillTab(const std::string &data, int &index) {
     std::string tempBuffer;
 
-    while (index < data.length() && data[index] != '\t') {
+    while (index < static_cast<int>(data.length()) && data[index] != '\t') {
         tempBuffer += data[index];
         index++;
     }

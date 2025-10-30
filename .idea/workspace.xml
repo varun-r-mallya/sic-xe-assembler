@@ -31,8 +31,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="format chore">
+    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="change types to size_t to avoid compiler warnings">
       <change beforePath="$PROJECT_DIR$/src/pass_1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_1.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pass_2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/pass_2.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +151,7 @@
       <workItem from="1761541417309" duration="11000" />
       <workItem from="1761715307491" duration="3238000" />
       <workItem from="1761742125382" duration="4051000" />
-      <workItem from="1761802249143" duration="5668000" />
+      <workItem from="1761802249143" duration="6360000" />
     </task>
     <task id="LOCAL-00001" summary="infinite loop error">
       <option name="closed" value="true" />
@@ -222,7 +225,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761813161989</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="change types to size_t to avoid compiler warnings">
+      <option name="closed" value="true" />
+      <created>1761813615377</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1761813615377</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -254,6 +265,7 @@
     <MESSAGE value="compiler warning cleaning chore" />
     <MESSAGE value="variable case changes" />
     <MESSAGE value="format chore" />
-    <option name="LAST_COMMIT_MESSAGE" value="format chore" />
+    <MESSAGE value="change types to size_t to avoid compiler warnings" />
+    <option name="LAST_COMMIT_MESSAGE" value="change types to size_t to avoid compiler warnings" />
   </component>
 </project>

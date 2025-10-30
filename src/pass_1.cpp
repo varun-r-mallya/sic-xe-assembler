@@ -42,7 +42,7 @@ bool pass_1::get_error() const {
 }
 
 void pass_1::run_pass_1() {
-    // utilities::writeToFile(errorFile, "**********PASS1************");
+    // utilities::writeToFile(errorFile, "PASS1:");
     utilities::write_to_file(intermediate_file_, "Line\tAddress\tBlock\tLabel\tOPCODE\tOPERAND\tComment");
 
     getline(source_file_, file_line_);
@@ -161,10 +161,6 @@ void pass_1::run_pass_1() {
                     location_counter += static_cast<int>(operand.length()) - 3;
                     last_location_counter += static_cast<int>(operand.length()) - 3;
                 }
-                // else{
-                //   writeData = "Line: "+to_string(line)+" : Invalid operand for BYTE. Found " + operand;
-                //   utilities::writeToFile(errorFile,writeData);
-                // }
             } else if (opcode == "BASE") {
                 utilities::first_non_whitespace(file_line_, index, status_code_, operand);
             } else if (opcode == "LTORG") {
@@ -189,20 +185,18 @@ void pass_1::run_pass_1() {
                     location_counter = utilities::string_hex_to_int(table_store_->SYMTAB[operand].address);
                 } else {
                     bool relative;
-                    // set error_flag to false
                     error_flag = false;
                     eval_expr(operand, relative);
                     if (!error_flag) {
                         location_counter = utilities::string_hex_to_int(temp_operand_);
                     }
-                    error_flag = false; // reset error_flag
+                    error_flag = false;
                 }
             } else if (opcode == "USE") {
                 utilities::first_non_whitespace(file_line_, index, status_code_, operand);
                 table_store_->BLOCKS[current_block_].LOCCTR = utilities::int_to_string_hex(location_counter);
 
                 if (table_store_->BLOCKS[operand].exists == 'n') {
-                    // cout<<"Creating block: "<<operand<<endl;
                     table_store_->BLOCKS[operand].exists = 'y';
                     table_store_->BLOCKS[operand].name = operand;
                     table_store_->BLOCKS[operand].number = total_blocks_++;
@@ -438,7 +432,7 @@ void pass_1::handle_LTORG(std::string &litPrefix) {
         string litAddress = snd.address;
         string litValue = snd.value;
         if (litAddress != "?") {
-            /*Pass as already address is assigned*/
+            //pass
         } else {
             line_number_ += 5;
             line_number_diff += 5;

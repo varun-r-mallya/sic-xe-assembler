@@ -14,11 +14,6 @@ int utilities::string_to_decimal(const std::string &str) {
     return value;
 }
 
-std::string utilities::get_string(const char c) {
-    std::string s(1, c);
-    return s;
-}
-
 std::string utilities::int_to_string_hex(const int x, const int fill) {
     std::stringstream s;
     s << std::setfill('0') << std::setw(fill) << std::hex << x;
