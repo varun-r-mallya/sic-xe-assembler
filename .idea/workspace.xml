@@ -31,15 +31,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="update example and readme">
-      <change afterPath="$PROJECT_DIR$/tests/test.sic.listing" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test.sic.object" afterDir="false" />
+    <list default="true" id="c72f9fb0-2bf2-44bb-b100-be9d72576340" name="Changes" comment="add example listing file and object code for test.sic">
+      <change afterPath="$PROJECT_DIR$/tests/sample.sic.object" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_program1.sic" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_program_with_error.sic" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test.sic.object" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +104,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/xeon/clonedrepos/sic-xe-assembler/tests",
+    "last_opened_file_path": "/home/xeon/clonedrepos/sic-xe-assembler/sending",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -117,15 +115,16 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/sending" />
       <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/build" />
       <recent name="$PROJECT_DIR$/cmake-build-debug" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.assembler">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="assembler" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-i fig2.11.sic" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="sic-xe-assembler" TARGET_NAME="assembler" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="sic-xe-assembler" RUN_TARGET_NAME="assembler">
@@ -161,7 +160,8 @@
       <workItem from="1761541417309" duration="11000" />
       <workItem from="1761715307491" duration="3238000" />
       <workItem from="1761742125382" duration="4051000" />
-      <workItem from="1761802249143" duration="9288000" />
+      <workItem from="1761802249143" duration="9953000" />
+      <workItem from="1761876495323" duration="2464000" />
     </task>
     <task id="LOCAL-00001" summary="infinite loop error">
       <option name="closed" value="true" />
@@ -275,7 +275,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761815069613</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="add example listing file and object code for test.sic">
+      <option name="closed" value="true" />
+      <created>1761817095272</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1761817095272</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -312,6 +320,7 @@
     <MESSAGE value="janitorial" />
     <MESSAGE value="use and comment files" />
     <MESSAGE value="update example and readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="update example and readme" />
+    <MESSAGE value="add example listing file and object code for test.sic" />
+    <option name="LAST_COMMIT_MESSAGE" value="add example listing file and object code for test.sic" />
   </component>
 </project>
